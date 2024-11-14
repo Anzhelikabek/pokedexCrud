@@ -1,1 +1,292 @@
 /* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+html { height: 100%; }
+.mat-mdc-paginator-container{
+  justify-content: center !important;
+  margin-top: 20px;
+}
+// Variables
+$font-family: Arial, sans-serif;
+$background-color: #f1f4f9;
+$modal-background: rgba(0, 0, 0, 0.5);
+$shadow-light: rgba(0, 0, 0, 0.13);
+$shadow-medium: rgba(0, 0, 0, 0.1);
+$color-primary: #ff5f5f;
+$color-secondary: #d4e157;
+$color-text-primary: #333;
+$color-text-secondary: #888;
+$border-radius-small: 10px;
+$border-radius-large: 25px;
+// Светлая тема (существующие переменные)
+$background-color: #ffffff;
+$color-primary: #ff5f5f;
+$color-text-primary: #333;
+$color-text-secondary: #888;
+// Темная тема (новые переменные)
+$dark-background-color: #212121;
+$dark-text-primary: #e0e0e0;
+$dark-text-secondary: #b0b0b0;
+$dark-primary-color: #bb86fc;
+$dark-card-bg: #282828;
+// Type colors
+$type-colors: (
+  grass: #48d0b0,
+  poison: #9f5bba,
+  normal: #A8A77A,
+  fire: #EE8130,
+  water: #6390F0,
+  electric: #F7D02C,
+  ice: #96D9D6,
+  fighting: #C22E28,
+  ground: #E2BF65,
+  flying: #A98FF3,
+  psychic: #F95587,
+  bug: #A6B91A,
+  rock: #B6A136,
+  ghost: #735797,
+  dark: #705746,
+  dragon: #6F35FC,
+  steel: #B7B7CE,
+  fairy: #D685AD
+);
+
+.light-theme {
+  background-color: $background-color;
+  color: $color-text-primary;
+  .pokemon-card {
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px $shadow-medium;
+  }
+  .pokemon-name{
+    color: $color-text-primary;
+  }
+  .pokemon-description{
+    color: $color-text-secondary;
+  }
+  .mat-mdc-paginator{
+    background-color: $background-color;
+    color: $color-text-primary;
+  }
+  .mat-mdc-select{
+    color: $color-text-primary;
+  }
+}
+
+.dark-theme {
+  background-color: $dark-background-color !important;
+  color: $dark-text-primary;
+
+  .pokemon-card {
+    background-color: $dark-card-bg;
+    box-shadow: 0 4px 8px $shadow-medium;
+  }
+  .pokemon-name{
+    color: $dark-text-primary;
+  }
+  .pokemon-description{
+    color: $dark-text-secondary;
+  }
+  .mat-mdc-paginator{
+    background-color: $dark-background-color;
+    color: $dark-text-primary;
+  }
+  .mat-mdc-select{
+    color: $dark-text-primary;
+  }
+  div.mat-mdc-select-panel{
+    background-color: $dark-card-bg;
+  }
+  .mat-mdc-option{
+    color: $dark-text-primary;
+  }
+  .mat-mdc-icon-button{
+    color: $dark-text-primary !important;
+  }
+  .search-input{
+    background-color: $dark-card-bg;
+    color: $dark-text-secondary;
+  }
+}
+mat-icon {
+  font-size: 36px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+mat-icon:hover {
+  color: #1976d2; /* Синий цвет при наведении */
+}
+
+// Base styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: $font-family;
+}
+body {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+.bg .img{
+  background-image: url('/assets/images/circle.png');
+  background-repeat: no-repeat;
+  width: 350px;
+  background-size: contain;
+  z-index: -1;
+  position: absolute;
+  opacity: 0.5;
+}
+.bg .bg-img-1{
+  top: 20px;
+  left: -136px;
+}
+.bg .bg-img-2{
+  top: -190px;
+  right: 386px;
+}
+.bg .bg-img-3{
+  top: 330px;
+  right: 11px;
+}
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  padding: 10px;
+}
+.navbar{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+  margin-bottom: 50px;
+}
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+
+  .logo {
+    width: 490px;
+    margin-top: 50px;
+  }
+}
+
+.navbar .logo {
+  width: 192px;
+}
+
+// Search styles
+.search-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 25px 30px;
+  border-radius: $border-radius-small;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  box-shadow: 0 2px 4px $shadow-light;
+}
+
+.search-button {
+  background-color: $color-primary;
+  box-shadow: 0 2px 4px $shadow-light;
+  border: none;
+  padding: 16px 20px;
+  border-radius: 10%;
+  cursor: pointer;
+  display: flex;
+  margin-left: 15px;
+
+  img {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+// Pokemon grid
+.pokemon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 4fr));
+  gap: 25px;
+}
+
+.texts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.pokemon-card {
+  border-radius: $border-radius-small;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+  display: flex;
+  box-shadow: 0 4px 8px $shadow-medium;
+background-color: $background-color;
+}
+
+.type-tags {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.type {
+  font-size: 0.8rem;
+  padding: 5px 10px;
+  border-radius: 12px;
+  color: #ffffff;
+
+  // Apply colors dynamically
+  @each $name, $color in $type-colors {
+    &.#{$name} {
+      background-color: $color;
+    }
+  }
+}
+
+// Text styles
+.pokemon-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.pokemon-id {
+  font-size: 0.9rem;
+  color: $color-text-secondary;
+  margin-bottom: 10px;
+}
+
+.pokemon-image {
+  width: 150px;
+  margin-bottom: 15px;
+}
+
+.pokemon-description {
+  text-align: left;
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+}
+
+// Button styles
+.know-more {
+  background-color: $color-secondary;
+  border: none;
+  padding: 10px 20px;
+  border-radius: $border-radius-large;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: $color-text-primary;
+}
