@@ -1,11 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
-html { height: 100%; }
-.mat-mdc-paginator-container{
-  justify-content: center !important;
-  margin-top: 20px;
+html {
+  height: 100%;
 }
+
+.mat-mdc-paginator-container {
+  justify-content: center !important;
+  //margin-top: 20px;
+}
+
 // Variables
 $font-family: Arial, sans-serif;
 $background-color: #f1f4f9;
@@ -14,6 +18,7 @@ $shadow-light: rgba(0, 0, 0, 0.13);
 $shadow-medium: rgba(0, 0, 0, 0.1);
 $color-primary: #ff5f5f;
 $color-secondary: #d4e157;
+$color-secondary-hover: #bad300;
 $color-text-primary: #333;
 $color-text-secondary: #888;
 $border-radius-small: 10px;
@@ -54,21 +59,21 @@ $type-colors: (
 .light-theme {
   background-color: $background-color;
   color: $color-text-primary;
+
   .pokemon-card {
     background-color: #ffffff;
     box-shadow: 0 4px 8px $shadow-medium;
   }
-  .pokemon-name{
+
+  .pokemon-name {
     color: $color-text-primary;
   }
-  .pokemon-description{
+
+  .pokemon-description {
     color: $color-text-secondary;
   }
-  .mat-mdc-paginator{
-    background-color: $background-color;
-    color: $color-text-primary;
-  }
-  .mat-mdc-select{
+
+  .mat-mdc-select {
     color: $color-text-primary;
   }
 }
@@ -81,33 +86,65 @@ $type-colors: (
     background-color: $dark-card-bg;
     box-shadow: 0 4px 8px $shadow-medium;
   }
-  .pokemon-name{
+
+  .pokemon-name {
     color: $dark-text-primary;
   }
-  .pokemon-description{
+
+  .pokemon-description {
     color: $dark-text-secondary;
   }
-  .mat-mdc-paginator{
-    background-color: $dark-background-color;
+
+  .mat-mdc-paginator {
+    background-color: $dark-card-bg;
     color: $dark-text-primary;
   }
-  .mat-mdc-select{
+
+  .mat-mdc-select {
     color: $dark-text-primary;
   }
-  div.mat-mdc-select-panel{
+
+  div.mat-mdc-select-panel {
     background-color: $dark-card-bg;
   }
-  .mat-mdc-option{
+
+  .mat-mdc-option {
     color: $dark-text-primary;
   }
-  .mat-mdc-icon-button{
+
+  .mat-mdc-icon-button {
     color: $dark-text-primary !important;
   }
-  .search-input{
+
+  .search-input {
     background-color: $dark-card-bg;
     color: $dark-text-secondary;
   }
+  .custom-pagination button{
+    background-color: $dark-background-color;
+    color: $dark-text-secondary;
+  }
+  .custom-pagination select{
+    background-color: $dark-background-color;
+    color: $dark-text-secondary;
+  }
+  .custom-pagination button:disabled{
+    background-color: #363636;
+  }
+  div.mat-mdc-autocomplete-panel{
+    background-color: $dark-background-color;
+  }
+  .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-text-field__input{
+    color: $dark-text-primary;
+  }
+  .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-floating-label{
+    color: $dark-text-secondary;
+  }
+  .mdc-text-field{
+    //border: 1px solid $dark-text-secondary;
+  }
 }
+
 mat-icon {
   font-size: 36px;
   cursor: pointer;
@@ -125,12 +162,17 @@ mat-icon:hover {
   box-sizing: border-box;
   font-family: $font-family;
 }
+
 body {
   display: flex;
   justify-content: center;
   padding: 20px;
+  background-image: url("assets/images/Group.png");
+  background-repeat: no-repeat;
+  background-size: contain;
 }
-.bg .img{
+
+.bg .img {
   background-image: url('/assets/images/circle.png');
   background-repeat: no-repeat;
   width: 350px;
@@ -139,31 +181,22 @@ body {
   position: absolute;
   opacity: 0.5;
 }
-.bg .bg-img-1{
-  top: 20px;
-  left: -136px;
-}
-.bg .bg-img-2{
-  top: -190px;
-  right: 386px;
-}
-.bg .bg-img-3{
-  top: 330px;
-  right: 11px;
-}
+
 .container {
   width: 100%;
   max-width: 1200px;
   margin: auto;
   padding: 10px;
 }
-.navbar{
+
+.navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 40px;
   margin-bottom: 50px;
 }
+
 .header {
   text-align: center;
   margin-bottom: 20px;
@@ -222,6 +255,7 @@ body {
 .texts {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   align-items: flex-start;
 }
 
@@ -232,7 +266,7 @@ body {
   position: relative;
   display: flex;
   box-shadow: 0 4px 8px $shadow-medium;
-background-color: $background-color;
+  background-color: $background-color;
 }
 
 .type-tags {
@@ -289,4 +323,189 @@ background-color: $background-color;
   font-size: 0.9rem;
   cursor: pointer;
   color: $color-text-primary;
+  text-decoration: none;
+}
+
+.know-more:hover {
+  background-color: $color-secondary-hover;
+  transition: .3s;
+}
+
+/* Стили для пагинации */
+mat-paginator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.mat-paginator-range-label {
+  font-size: 14px;
+  color: #666;
+  margin: 0 8px;
+}
+
+.mat-paginator-page-size-label {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Стили для кнопок */
+.mat-paginator-button {
+  font-size: 14px;
+  color: #333;
+  padding: 8px 14px;
+  margin: 0 4px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Активная страница */
+.mat-paginator-button.mat-paginator-page.mat-paginator-button-active {
+  background-color: #6200ea;
+  color: white;
+  border-color: #6200ea;
+}
+
+/* При наведении */
+.mat-paginator-button:hover {
+  background-color: #f1f1f1;
+  border-color: #999;
+}
+
+/* Disabled кнопки */
+.mat-paginator-button[disabled] {
+  background-color: #e0e0e0;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Стиль для кнопок "First" и "Last" */
+.mat-paginator-navigation-previous,
+.mat-paginator-navigation-next {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 12px;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.mat-paginator-navigation-previous:hover,
+.mat-paginator-navigation-next:hover {
+  background-color: #ddd;
+}
+
+/* Стиль для центральных кнопок */
+.mat-paginator-page {
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.mat-paginator-page.mat-paginator-button-active {
+  background-color: #6200ea;
+  color: white;
+  border-color: #6200ea;
+}
+
+/* Стиль для выбора страницы размера */
+.mat-paginator-page-size select {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 14px;
+  margin-left: 8px;
+}
+
+.mat-paginator-page-size select:focus {
+  outline: none;
+  border-color: #6200ea;
+}
+
+.mat-paginator-page-size {
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+}
+
+.mat-paginator-page-size select {
+  width: 80px;
+  height: 36px;
+}
+
+/* Дизайн для "..." (многоточие) */
+.mat-paginator-page-size label,
+.mat-paginator-page {
+  font-size: 14px;
+  padding: 0 8px;
+  height: 32px;
+}
+
+.mat-mdc-paginator-page-size-label {
+  display: none;
+}
+.mat-mdc-paginator{
+  margin-top: 20px;
+}
+.mat-mdc-paginator-range-label {
+  display: none;
+}
+.mat-mdc-text-field-wrapper{
+  height: 50px;
+}
+
+.custom-pagination {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+
+
+.custom-pagination-content{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+  button {
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+    font-size: 14px;
+
+    &:disabled {
+      cursor: not-allowed;
+      background-color: #f1f1f1;
+    }
+
+    &.active {
+      background-color: #386ABB;
+      color: white;
+    }
+  }
+
+  select {
+    padding: 5px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+  }
 }

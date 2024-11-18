@@ -1,54 +1,56 @@
-<div class="bg">
-  <img class="img bg-img-1" src="assets/images/circle.png" alt="Circle">
-  <img class="img bg-img-2" src="assets/images/circle.png" alt="Circle">
-  <img class="img bg-img-3" src="assets/images/circle.png" alt="Circle">
-
-  <div class="container">
-    <nav class="navbar">
-      <img src="assets/images/logo.png" alt="Pokemon Logo" class="logo">
-      <mat-icon class="theme-icon" (click)="toggleTheme()">
-        {{ isDarkTheme ? 'brightness_2' : 'wb_sunny' }}
-      </mat-icon>
-    </nav>
-    <header class="header">
-      <img src="assets/images/logo.png" alt="Pokemon Logo" class="logo">
-
-    </header>
-    <div class="search-container">
-      <input type="text" [(ngModel)]="searchTerm" placeholder="search eg, ditto or pikachu" class="search-input"
-             (keyup.enter)="onSearch()">
-      <button class="search-button" (click)="onSearch()">
-        <img src="assets/images/search.png" alt="Search">
-      </button>
-    </div>
-    <div class="pokemon-grid">
-      <div *ngFor="let pokemon of pokemons" class="pokemon-card">
-        <div class="texts">
-          <div class="type-tags">
-            <span *ngFor="let type of pokemon.types" class="type {{ type }}">{{ type | titlecase }}</span>
-          </div>
-          <h2 class="pokemon-name">{{pokemon.name | titlecase}}</h2>
-          <p class="pokemon-description">{{ pokemon.description }}</p>
-          <button (click)="openPokemonDetails(pokemon.name)" class="know-more">Know More</button>
+<div class="container">
+  <header class="header">
+    <img src="assets/images/logo.png" alt="Pokemon Logo" class="logo">
+  </header>
+  <div class="search-container">
+    <input type="text" [(ngModel)]="searchTerm" [placeholder]="translations.search" class="search-input"
+           (keyup.enter)="onSearch()">
+    <button class="search-button" (click)="onSearch()">
+      <img src="assets/images/search.png" alt="Search">
+    </button>
+  </div>
+  <div class="pokemon-grid">
+    <div *ngFor="let pokemon of pokemons" class="pokemon-card">
+      <div class="texts">
+        <div class="type-tags">
+          <span *ngFor="let type of pokemon.types" class="type {{ type }}">{{ type | titlecase }}</span>
         </div>
-        <div>
-          <span class="pokemon-id">{{ pokemon.id | leadingZeros }}</span>
-          <img [src]="pokemon.image" [alt]="pokemon.name" class="pokemon-image">
-        </div>
+        <h2 class="pokemon-name">{{pokemon.name | titlecase}}</h2>
+        <p class="pokemon-description">{{ pokemon.description }}</p>
+        <a [routerLink]="['/pokemon', pokemon.name]" class="know-more">{{translations.knowMore}}</a>
+      </div>
+      <div>
+        <span class="pokemon-id">{{ pokemon.id | leadingZeros }}</span>
+        <img [src]="pokemon.image" [alt]="pokemon.name" class="pokemon-image">
       </div>
     </div>
-    <app-pokemon-details
-      *ngIf="isModalOpen"
-      [pokemonName]="selectedPokemonName"
-      (dataLoaded)="openPokemonDetails($event)">
-    </app-pokemon-details>
-
-    <mat-paginator
-      [length]="totalPokemons"
-      [pageSize]="pageSize"
-      [pageSizeOptions]="[10, 20, 50]"
-      (page)="onPageChange($event)">
-    </mat-paginator>
   </div>
+  <div class="custom-pagination">
+    <div class="custom-pagination-content">
+      <button (click)="goToFirstPage()" [disabled]="pageIndex === 0"><< First</button>
+      <button (click)="goToPreviousPage()" [disabled]="pageIndex === 0">< Back</button>
+
+      <button *ngFor="let page of pages" (click)="goToPage(page)" [class.active]="page === pageIndex + 1">
+        {{ page }}
+      </button>
+
+      <button (click)="goToNextPage()" [disabled]="pageIndex === totalPages - 1">Next ></button>
+      <button (click)="goToLastPage()" [disabled]="pageIndex === totalPages - 1">Last >></button>
+
+      <select (change)="onPageSizeChange($event)">
+        <option *ngFor="let size of pageSizeOptions" [value]="size" [selected]="size === pageSize">
+          {{ size }}
+        </option>
+      </select>
+    </div>
+  </div>
+<!--  <mat-paginator-->
+<!--    [length]="totalPokemons"-->
+<!--    [pageSize]="pageSize"-->
+<!--    [pageSizeOptions]="[10, 20, 50]"-->
+<!--    (page)="onPageChange($event)"-->
+<!--    showFirstLastButtons="true">-->
+<!--  </mat-paginator>-->
+
 </div>
 
