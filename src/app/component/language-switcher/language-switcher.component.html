@@ -1,0 +1,19 @@
+<mat-form-field appearance="outline">
+  <mat-label>{{translations.chooseLanguage}}</mat-label>
+  <input
+    type="text"
+    [placeholder]="translations.chooseLanguage"
+    aria-label="Language"
+    matInput
+    [formControl]="languageControl"
+    [matAutocomplete]="auto"
+  />
+  <mat-autocomplete
+    #auto="matAutocomplete"
+    (optionSelected)="switchLanguage($event.option.value)"
+  >
+    <mat-option *ngFor="let lang of languages" [value]="lang.code">
+      {{ lang.name }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>

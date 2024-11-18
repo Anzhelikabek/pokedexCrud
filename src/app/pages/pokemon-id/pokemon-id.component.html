@@ -1,0 +1,43 @@
+<div class="container">
+  <div *ngIf="pokemon" class="pokemon-details pokemon-card">
+    <div class="pokemon-image">
+      <img [src]="pokemon.image" [alt]="pokemon.name"/>
+    </div>
+
+    <div class="pokemon-info">
+      <h2 class="pokemon-id">#{{ pokemon.id | number:'3.0' }}</h2>
+      <h1 class="pokemon-name">{{ pokemon.name | titlecase }}</h1>
+
+      <div class="pokemon-types">
+        <span *ngFor="let type of pokemon.types" class="type-badge">{{ type }}</span>
+      </div>
+
+      <p class="pokemon-description">{{ pokemon.description }}</p>
+
+      <div class="pokemon-attributes">
+        <div class="attribute">
+          <span>{{translations.height}}</span>
+          <span>{{ pokemon.height / 10 }}m</span>
+        </div>
+        <div class="attribute">
+          <span>{{translations.weight}}</span>
+          <span>{{ pokemon.weight / 10 }}kg</span>
+        </div>
+      </div>
+
+      <h3>{{translations.stats}}</h3>
+      <div class="pokemon-stats">
+        <div *ngFor="let stat of pokemon.stats" class="stat" [ngClass]="stat.name">
+          <span>{{ stat.name | uppercase }}</span>
+          <span>{{ stat.value }}</span>
+        </div>
+      </div>
+
+      <h3>{{translations.abilities}}</h3>
+      <div class="pokemon-abilities">
+        <span *ngFor="let ability of pokemon.abilities" class="ability">{{ ability }}</span>
+      </div>
+    </div>
+  </div>
+  <h3 *ngIf="!pokemon" class="loading">loading...</h3>
+</div>
