@@ -1,0 +1,42 @@
+<div class="login-container">
+  <h1>Login</h1>
+  <p>
+    Don`t have an account?
+    <a routerLink="/register">Create Now</a>
+  </p>
+  <form>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" placeholder="Enter your email" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" placeholder="Enter your password" />
+      <button mat-icon-button matSuffix tabindex="-1">
+        <mat-icon>visibility</mat-icon>
+      </button>
+    </mat-form-field>
+
+
+    <button mat-raised-button class="login-button">
+      Login
+    </button>
+
+<!--    <a href="#" class="forgot-password">Forgot a password?</a>-->
+
+    <div class="separator">
+      <span>Or</span>
+    </div>
+
+<!--    <button mat-stroked-button class="social-button facebook">-->
+<!--      <mat-icon class="social-icon">facebook</mat-icon>-->
+<!--      Continue with Facebook-->
+<!--    </button>-->
+
+    <button mat-stroked-button class="social-button google">
+      <mat-icon class="social-icon">google</mat-icon>
+      Continue with Google
+    </button>
+  </form>
+</div>
