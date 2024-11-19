@@ -1,7 +1,13 @@
 <nav class="navbar">
   <img src="assets/images/logo.png" alt="Pokemon Logo" class="logo">
-  <mat-icon class="theme-icon" (click)="toggleTheme()">
-    {{ isDarkTheme ? 'brightness_2' : 'wb_sunny' }}
-  </mat-icon>
-  <app-language-switcher></app-language-switcher>
+  <div class="navbar-item">
+    <mat-icon class="theme-icon" (click)="toggleTheme()">
+      {{ isDarkTheme ? 'brightness_2' : 'wb_sunny' }}
+    </mat-icon>
+    <app-language-switcher></app-language-switcher>
+    <button mat-raised-button color="primary">
+      <mat-icon>logout</mat-icon>
+      Sign Out
+    </button>
+  </div>
 </nav>

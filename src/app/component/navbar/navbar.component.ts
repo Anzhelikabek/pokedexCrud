@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 import { RouterOutlet } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';  // Импортируем CookieService
+import { CookieService } from 'ngx-cookie-service';
+import {MatButton} from '@angular/material/button';  // Импортируем CookieService
 
 @Component({
   selector: 'app-navbar',
@@ -10,7 +11,8 @@ import { CookieService } from 'ngx-cookie-service';  // Импортируем C
   imports: [
     MatIcon,
     LanguageSwitcherComponent,
-    RouterOutlet
+    RouterOutlet,
+    MatButton
   ],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
