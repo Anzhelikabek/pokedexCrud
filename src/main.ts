@@ -1,16 +1,19 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
+import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
-import { appConfig } from './app/app.config';
-import {provideRouter} from '@angular/router';
-import {routes} from './app/app.routes';
-import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import { firebaseConfig } from './app/firebase.config';
+import { routes } from './app/app.routes';
+import {provideAnimations, provideNoopAnimations} from '@angular/platform-browser/animations';
 
 bootstrapApplication(AppComponent, {
-  ...appConfig,
   providers: [
     provideHttpClient(),
-    provideRouter(routes),
-    provideAnimations()
-  ]
-}).catch(err => console.error('Error during bootstrap:', err));
+    provideNoopAnimations(),
+    provideRouter(routes), // Маршруты
+    provideFirebaseApp(() => initializeApp(firebaseConfig)), // Инициализация Firebase
+    provideAuth(() => getAuth()), // Инициализация Auth
+  ],
+}).catch((err) => console.error(err));

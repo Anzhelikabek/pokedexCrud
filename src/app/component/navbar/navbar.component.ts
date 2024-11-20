@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
-import { RouterOutlet } from '@angular/router';
+import {Router, RouterOutlet} from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
-import {MatButton} from '@angular/material/button';  // Импортируем CookieService
+import {MatButton} from '@angular/material/button';
+import {AuthService} from '../../data/services/auth.service';
+import {log} from '@angular-devkit/build-angular/src/builders/ssr-dev-server';  // Импортируем CookieService
 
 @Component({
   selector: 'app-navbar',
@@ -20,7 +22,7 @@ import {MatButton} from '@angular/material/button';  // Импортируем C
 export class NavbarComponent {
   isDarkTheme = false; // начальное значение светлой темы
 
-  constructor(private cookieService: CookieService) {
+  constructor(private cookieService: CookieService, private authService: AuthService, private router: Router) {
     // Проверяем значение темы в cookies при загрузке
     const savedTheme = this.cookieService.get('theme');
     if (savedTheme) {
@@ -44,5 +46,23 @@ export class NavbarComponent {
       document.body.classList.add('light-theme');
       document.body.classList.remove('dark-theme');
     }
+  }
+  onLogout() {
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser) {
+      const userEmail = currentUser.email;
+      const confirmation = confirm(`Are you sure you want to log out from ${userEmail}?`);
+      if (!confirmation) {
+        return;
+      }
+    }
+
+    this.authService.logout()
+      .then(() => {
+        alert('You have been signed out');
+        this.router.navigate(['/login']);
+         // Перенаправление на страницу логина
+      })
+      .catch(err => alert('Error signing out: ' + err.message));
   }
 }

@@ -3,8 +3,9 @@ import {MatButton, MatIconButton} from "@angular/material/button";
 import {MatFormField, MatLabel, MatSuffix} from "@angular/material/form-field";
 import {MatIcon} from "@angular/material/icon";
 import {MatInput} from "@angular/material/input";
-import {RouterLink} from '@angular/router';
-
+import {Router, RouterLink} from '@angular/router';
+import { AuthService } from '../../data/services/auth.service';
+import {FormsModule} from '@angular/forms';
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -16,11 +17,42 @@ import {RouterLink} from '@angular/router';
     MatInput,
     MatLabel,
     MatSuffix,
-    RouterLink
+    RouterLink,
+    FormsModule
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
 export class RegisterComponent {
+  email = '';
+  password = '';
 
+  constructor(private authService: AuthService, private router: Router) {}
+  hidePassword: boolean = true; // Скрывать пароль по умолчанию
+
+  togglePasswordVisibility(): void {
+    this.hidePassword = !this.hidePassword; // Переключаем состояние
+  }
+  onRegister() {
+    this.authService.register(this.email, this.password)
+      .then(() => {
+        alert('Registration successful!');
+        this.router.navigate(['/pokemon']); // Перенаправление на страницу /pokemon
+        this.clearInputs(); // Очистка инпутов
+      })
+      .catch(err => {
+        alert('Registration failed: ' + err.message);
+        this.clearInputs(); // Очистка инпутов в случае ошибки
+      });
+  }
+  clearInputs() {
+    this.email = '';
+    this.password = '';
+  }
+
+  // onGoogleSignIn() {
+  //   this.authService.googleSignIn()
+  //     .then(user => alert(`Welcome, ${user.displayName}!`))
+  //     .catch(err => alert(`Google Sign-In Failed: ${err.message}`));
+  // }
 }
