@@ -1,7 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
-import {Router, RouterOutlet} from '@angular/router';
+import {Router, RouterLink, RouterOutlet} from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {AuthService} from '../../data/services/auth.service';
@@ -26,7 +26,8 @@ import {MatToolbar} from '@angular/material/toolbar';  // Импортируем
     MatIconButton,
     NgForOf,
     MatToolbar,
-    NgIf
+    NgIf,
+    RouterLink
   ],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
