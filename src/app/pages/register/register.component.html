@@ -4,10 +4,21 @@
     Already have an account?
     <a routerLink="/">Login</a>
   </p>
-  <form>
+  <form #registerForm="ngForm" (ngSubmit)="onRegister()">
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Email</mat-label>
-      <input matInput type="email" placeholder="Enter your email" [(ngModel)]="email" name="email" />
+      <input
+        matInput
+        type="email"
+        [(ngModel)]="email"
+        name="email"
+        placeholder="Enter your email"
+        required
+        #emailInput="ngModel"
+      />
+      <mat-error *ngIf="emailInput.invalid && emailInput.touched">
+        Email is required and should be a valid email.
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
@@ -15,28 +26,38 @@
       <input
         matInput
         [type]="hidePassword ? 'password' : 'text'"
-      placeholder="Enter your password"
-      [(ngModel)]="password"
-      name="password"
+        placeholder="Enter your password"
+        [(ngModel)]="password"
+        name="password"
+        required
+        #passwordInput="ngModel"
       />
       <button
         mat-icon-button
         matSuffix
         tabindex="-1"
         (click)="togglePasswordVisibility()"
-      [attr.aria-label]="'Toggle password visibility'"
-      [attr.aria-pressed]="!hidePassword"
+        [attr.aria-label]="'Toggle password visibility'"
+        [attr.aria-pressed]="!hidePassword"
+        type="button"
       >
-      <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
       </button>
+      <mat-error *ngIf="passwordInput.invalid && passwordInput.touched">
+        Password is required.
+      </mat-error>
     </mat-form-field>
 
-
-
-    <button mat-raised-button class="login-button" (click)="onRegister()">
+    <button
+      mat-raised-button
+      class="login-button"
+      type="submit"
+      [disabled]="registerForm.invalid"
+    >
       Register
     </button>
-
+  </form>
+</div>
 
 <!--    <div class="separator">-->
 <!--      <span>Or</span>-->
@@ -46,6 +67,3 @@
 <!--      <mat-icon class="social-icon">google</mat-icon>-->
 <!--      Continue with Google-->
 <!--    </button>-->
-
-  </form>
-</div>

@@ -1,3 +1,4 @@
+<app-navbar></app-navbar>
 <div class="container">
   <header class="header">
     <img src="assets/images/logo.png" alt="Pokemon Logo" class="logo">
@@ -27,30 +28,52 @@
   </div>
   <div class="custom-pagination">
     <div class="custom-pagination-content">
-      <button (click)="goToFirstPage()" [disabled]="pageIndex === 0"><< First</button>
-      <button (click)="goToPreviousPage()" [disabled]="pageIndex === 0">< Back</button>
+      <!-- Кнопки First и Back -->
+      <button
+        (click)="goToFirstPage()"
+        [disabled]="pageIndex === 0"
+        class="first-button">
+        << First</button>
+      <button
+        (click)="goToPreviousPage()"
+        [disabled]="pageIndex === 0"
+        class="back-button">
+        < Back</button>
 
-      <button *ngFor="let page of pages" (click)="goToPage(page)" [class.active]="page === pageIndex + 1">
+      <button
+        *ngFor="let page of pages"
+        (click)="goToPage(page)"
+        [class.active]="page === pageIndex + 1"
+        class="page-button"
+      >
         {{ page }}
       </button>
 
-      <button (click)="goToNextPage()" [disabled]="pageIndex === totalPages - 1">Next ></button>
-      <button (click)="goToLastPage()" [disabled]="pageIndex === totalPages - 1">Last >></button>
+      <button
+        (click)="goToNextPage()"
+        [disabled]="pageIndex === totalPages - 1"
+        class="next-button"
+      >
+        Next >
+      </button>
+      <button
+        (click)="goToLastPage()"
+        [disabled]="pageIndex === totalPages - 1"
+        class="last-button"
+      >
+        Last >>
+      </button>
 
-      <select (change)="onPageSizeChange($event)">
+      <select
+        (change)="onPageSizeChange($event)"
+        class="page-size-select"
+      >
         <option *ngFor="let size of pageSizeOptions" [value]="size" [selected]="size === pageSize">
           {{ size }}
         </option>
       </select>
     </div>
   </div>
-<!--  <mat-paginator-->
-<!--    [length]="totalPokemons"-->
-<!--    [pageSize]="pageSize"-->
-<!--    [pageSizeOptions]="[10, 20, 50]"-->
-<!--    (page)="onPageChange($event)"-->
-<!--    showFirstLastButtons="true">-->
-<!--  </mat-paginator>-->
 
 </div>
 

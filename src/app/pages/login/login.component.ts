@@ -6,6 +6,7 @@ import {MatButton, MatButtonModule, MatIconButton} from '@angular/material/butto
 import {Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../data/services/auth.service';
 import {FormsModule} from '@angular/forms';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-login',
@@ -22,6 +23,7 @@ import {FormsModule} from '@angular/forms';
     MatIconModule,
     RouterLink,
     FormsModule,
+    NgIf,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -38,10 +40,18 @@ export class LoginComponent {
     this.hidePassword = !this.hidePassword; // Переключаем состояние
   }
   onLogin() {
+    if (!this.email || !this.password) {
+      alert('Please fill in all required fields');
+      return;
+    }
+    console.log('Logging in with:', this.email, this.password);
     this.authService.login(this.email, this.password)
       .then(() => {
-        this.router.navigate(['/pokemon']);
-        this.clearInputs();
+        this.router.navigate(['/pokemon']).then(() => {
+          window.location.reload();
+          this.clearInputs();
+        });
+
       })
       .catch(err => {
         alert('Login failed: ' + err.message);

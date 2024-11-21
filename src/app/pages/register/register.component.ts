@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import {MatButton, MatIconButton} from "@angular/material/button";
-import {MatFormField, MatLabel, MatSuffix} from "@angular/material/form-field";
+import {MatError, MatFormField, MatLabel, MatSuffix} from "@angular/material/form-field";
 import {MatIcon} from "@angular/material/icon";
 import {MatInput} from "@angular/material/input";
 import {Router, RouterLink} from '@angular/router';
 import { AuthService } from '../../data/services/auth.service';
 import {FormsModule} from '@angular/forms';
+import {NgIf} from '@angular/common';
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -18,7 +19,9 @@ import {FormsModule} from '@angular/forms';
     MatLabel,
     MatSuffix,
     RouterLink,
-    FormsModule
+    FormsModule,
+    NgIf,
+    MatError
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
@@ -34,6 +37,11 @@ export class RegisterComponent {
     this.hidePassword = !this.hidePassword; // Переключаем состояние
   }
   onRegister() {
+    if (!this.email || !this.password) {
+      alert('Please fill in all required fields');
+      return;
+    }
+    console.log('Registering with:', this.email, this.password);
     this.authService.register(this.email, this.password)
       .then(() => {
         alert('Registration successful!');

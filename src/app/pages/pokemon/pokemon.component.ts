@@ -11,15 +11,16 @@ import {FormsModule} from '@angular/forms';
 import {LeadingZerosPipe} from '../../pipes/leading-zeros.pipe';
 import {FlavorTextEntry} from '../../data/interfaces/pokemon'
 import {MatButton} from '@angular/material/button';
-import {RouterLink} from '@angular/router';
+import {RouterLink, RouterOutlet} from '@angular/router';
 import {PokemonIdComponent} from '../pokemon-id/pokemon-id.component';
 import {TranslationService} from '../../data/services/translation.service';
 import {log} from '@angular-devkit/build-angular/src/builders/ssr-dev-server';
+import {NavbarComponent} from "../../component/navbar/navbar.component";
 
 @Component({
   selector: 'app-pokemon',
   standalone: true,
-  imports: [MatSlideToggleModule, MatIconModule, MatPaginatorModule, MatDialogModule, PokemonDetailsComponent, NgForOf, JsonPipe, TitleCasePipe, MatPaginator, NgIf, FormsModule, LeadingZerosPipe, PokemonDetailsComponent, MatButton, NgClass, RouterLink, PokemonIdComponent],
+    imports: [MatSlideToggleModule, MatIconModule, MatPaginatorModule, MatDialogModule, PokemonDetailsComponent, NgForOf, JsonPipe, TitleCasePipe, MatPaginator, NgIf, FormsModule, LeadingZerosPipe, PokemonDetailsComponent, MatButton, NgClass, RouterLink, PokemonIdComponent, NavbarComponent, RouterOutlet],
   templateUrl: './pokemon.component.html',
   styleUrls: ['./pokemon.component.scss']
 })

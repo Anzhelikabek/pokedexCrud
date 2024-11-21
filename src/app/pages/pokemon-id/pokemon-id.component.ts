@@ -1,15 +1,16 @@
 // pokemon-id.component.ts
 import {Component, inject, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, RouterOutlet} from '@angular/router';
 import {PokemonService} from '../../data/services/pokemon.service';
 import {CommonModule} from '@angular/common';
 import {FlavorTextEntry} from '../../data/interfaces/pokemon';
 import {TranslationService} from '../../data/services/translation.service';
+import {NavbarComponent} from "../../component/navbar/navbar.component";
 
 @Component({
   selector: 'app-pokemon-id',
   standalone: true,
-  imports: [CommonModule],
+    imports: [CommonModule, NavbarComponent, RouterOutlet],
   templateUrl: './pokemon-id.component.html',
   styleUrls: ['./pokemon-id.component.scss']
 })

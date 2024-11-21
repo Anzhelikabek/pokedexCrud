@@ -7,6 +7,7 @@ import { provideAuth, getAuth } from '@angular/fire/auth';
 import { firebaseConfig } from './app/firebase.config';
 import { routes } from './app/app.routes';
 import {provideAnimations, provideNoopAnimations} from '@angular/platform-browser/animations';
+import { NavbarComponent } from './app/component/navbar/navbar.component';
 
 bootstrapApplication(AppComponent, {
   providers: [

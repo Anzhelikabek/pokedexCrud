@@ -1,11 +1,15 @@
-import { Component } from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 import {Router, RouterOutlet} from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
-import {MatButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
 import {AuthService} from '../../data/services/auth.service';
-import {log} from '@angular-devkit/build-angular/src/builders/ssr-dev-server';  // Импортируем CookieService
+import {log} from '@angular-devkit/build-angular/src/builders/ssr-dev-server';
+import {MatSidenav, MatSidenavContainer} from '@angular/material/sidenav';
+import {MatListItem, MatNavList} from '@angular/material/list';
+import {NgForOf, NgIf} from '@angular/common';
+import {MatToolbar} from '@angular/material/toolbar';  // Импортируем CookieService
 
 @Component({
   selector: 'app-navbar',
@@ -14,13 +18,23 @@ import {log} from '@angular-devkit/build-angular/src/builders/ssr-dev-server';  
     MatIcon,
     LanguageSwitcherComponent,
     RouterOutlet,
-    MatButton
+    MatButton,
+    MatListItem,
+    MatNavList,
+    MatSidenav,
+    MatSidenavContainer,
+    MatIconButton,
+    NgForOf,
+    MatToolbar,
+    NgIf
   ],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent {
   isDarkTheme = false; // начальное значение светлой темы
+  @ViewChild('sidenav') sidenav!: MatSidenav;
+  isMenuOpen = false;
 
   constructor(private cookieService: CookieService, private authService: AuthService, private router: Router) {
     // Проверяем значение темы в cookies при загрузке
@@ -56,13 +70,20 @@ export class NavbarComponent {
         return;
       }
     }
-
     this.authService.logout()
       .then(() => {
         alert('You have been signed out');
-        this.router.navigate(['/login']);
-         // Перенаправление на страницу логина
+        this.isMenuOpen = false;
+        this.router.navigate(['/login']).then(() => {
+          window.location.reload();
+        });
       })
       .catch(err => alert('Error signing out: ' + err.message));
+  }
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen; // Открыть/закрыть выпадающее меню
+  }
+  closeMenu(): void {
+    this.isMenuOpen = false; // Закрыть меню при клике на затемняющий фон
   }
 }
