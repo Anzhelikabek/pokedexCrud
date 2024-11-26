@@ -2,30 +2,33 @@ import {Component, EventEmitter, HostBinding, inject, Output, ViewChild} from '@
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatIconModule} from '@angular/material/icon';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
-import {PokemonDetailsComponent} from '../../component/pokemon-details/pokemon-details.component';
 import {PokemonService} from '../../data/services/pokemon.service';
 import {JsonPipe, NgClass, NgForOf, NgIf, TitleCasePipe} from '@angular/common';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {FormsModule} from '@angular/forms';
 import {LeadingZerosPipe} from '../../pipes/leading-zeros.pipe';
-import {FlavorTextEntry} from '../../data/interfaces/pokemon'
-import {MatButton} from '@angular/material/button';
+import {FlavorTextEntry, Pokemon} from '../../data/interfaces/pokemon'
+import {MatButton, MatIconButton} from '@angular/material/button';
 import {RouterLink, RouterOutlet} from '@angular/router';
 import {PokemonIdComponent} from '../pokemon-id/pokemon-id.component';
 import {TranslationService} from '../../data/services/translation.service';
-import {log} from '@angular-devkit/build-angular/src/builders/ssr-dev-server';
 import {NavbarComponent} from "../../component/navbar/navbar.component";
+import {HttpClient} from '@angular/common/http';
+import {PokemonEditDialogComponent} from '../../component/pokemon-edit-dialog/pokemon-edit-dialog.component';
+import {PokemonAddDialogComponent} from '../../component/pokemon-add-dialog/pokemon-add-dialog.component';
+import {MatProgressSpinner, ProgressSpinnerMode} from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-pokemon',
   standalone: true,
-    imports: [MatSlideToggleModule, MatIconModule, MatPaginatorModule, MatDialogModule, PokemonDetailsComponent, NgForOf, JsonPipe, TitleCasePipe, MatPaginator, NgIf, FormsModule, LeadingZerosPipe, PokemonDetailsComponent, MatButton, NgClass, RouterLink, PokemonIdComponent, NavbarComponent, RouterOutlet],
+  imports: [MatSlideToggleModule, MatIconModule, MatPaginatorModule, MatDialogModule, NgForOf, JsonPipe, TitleCasePipe, MatPaginator, NgIf, FormsModule, LeadingZerosPipe, MatButton, NgClass, RouterLink, PokemonIdComponent, NavbarComponent, RouterOutlet, MatIconButton, MatProgressSpinner],
   templateUrl: './pokemon.component.html',
   styleUrls: ['./pokemon.component.scss']
 })
 export class PokemonComponent {
   pokemonService = inject(PokemonService);
+  loading: boolean = false;
   pokemons: any[] = [];
   totalPokemons = 0;
   pageSize = 20;
@@ -35,9 +38,12 @@ export class PokemonComponent {
   totalPages = 0; // Общее количество страниц
   pageSizeOptions = [10, 20, 50]; // Возможные размеры страниц
   pages: number[] = [];
+  private apiUrl = 'https://crucrud.com/api/d265aef63a8e4cfc914988231cced933/pokedex';
+  // pokemonsCrud: any[] = [];
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private translationService: TranslationService) {
+  constructor(private translationService: TranslationService,private http: HttpClient, private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -47,7 +53,40 @@ export class PokemonComponent {
     this.loadPokemons();
 
   }
+  openAddDialog(): void {
+    const dialogRef = this.dialog.open(PokemonAddDialogComponent, {
+      width: '600px',
+    });
 
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        result.id = this.pokemons.length + 1; // Уникальный ID
+        this.pokemons.push(result);
+      }
+    });
+  }
+
+  openEditDialog(pokemon: any): void {
+    const dialogRef = this.dialog.open(PokemonEditDialogComponent, {
+      width: '600px',
+      data: { pokemon },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const index = this.pokemons.findIndex((p) => p.id === pokemon.id);
+        if (index > -1) {
+          this.pokemons[index] = result;
+        }
+      }
+    });
+  }
+  deletePokemon(pokemon: any): void {
+    const index = this.pokemons.findIndex((p) => p.id === pokemon.id);
+    if (index > -1) {
+      this.pokemons.splice(index, 1); // Удаляем покемона из массива
+    }
+  }
   private updateTranslations(): void {
     this.translationService.getTranslation('knowMore').subscribe(translation => {
       this.translations.title = translation;
@@ -66,7 +105,6 @@ export class PokemonComponent {
           this.pokemons = []
           let objToArr = [data]
           objToArr.forEach((pokemon: any) => {
-            console.log(pokemon)
             this.pokemonService.getPokemonSpecies(pokemon.id).subscribe(
               species => {
                 const description = species.flavor_text_entries.find((entry: FlavorTextEntry) => entry.language.name === 'en')?.flavor_text || 'No description available';
@@ -105,7 +143,6 @@ export class PokemonComponent {
                   const description = species.flavor_text_entries.find(
                     (entry: FlavorTextEntry) => entry.language.name === 'en'
                   )?.flavor_text || 'No description available';
-
                   this.pokemons.push({
                     name: details.name,
                     id: details.id,
@@ -113,6 +150,7 @@ export class PokemonComponent {
                     types: details.types.map((type: any) => type.type.name),
                     description: description
                   });
+                  this.loading = true
                 },
                 error => console.error('Error fetching species details:', error)
               );
@@ -127,6 +165,29 @@ export class PokemonComponent {
     );
   }
 
+  // postPokemons() {
+  //   this.pokemons.forEach(pokemon => {
+  //     this.http.post(this.apiUrl, pokemon).subscribe({
+  //       next: response => {
+  //         console.log('Успешно отправлено:', response);
+  //       },
+  //       error: error => {
+  //         console.error('Ошибка при отправке:', error);
+  //       },
+  //     });
+  //   });
+  // }
+  // getPokemons() {
+  //   this.http.get<any[]>(this.apiUrl).subscribe({
+  //     next: response => {
+  //       this.pokemonsCrud = response; // Сохраняем полученные данные в массив
+  //       console.log('Полученные данные:', this.pokemonsCrud);
+  //     },
+  //     error: error => {
+  //       console.error('Ошибка при получении данных:', error);
+  //     },
+  //   });
+  // }
   generatePageNumbers(): number[] {
     // Логика для отображения страниц вокруг текущей
     let start = Math.max(1, this.pageIndex - 2);

@@ -55,7 +55,12 @@ $type-colors: (
   steel: #B7B7CE,
   fairy: #D685AD
 );
-
+.loading{
+  font-size: 24px;
+  text-align: center;
+  font-weight: bolder;
+  margin-top: 100px;
+}
 .light-theme {
   background-color: $background-color;
   color: $color-text-primary;
@@ -120,33 +125,42 @@ $type-colors: (
     background-color: $dark-card-bg;
     color: $dark-text-secondary;
   }
-  .custom-pagination button{
+
+  .custom-pagination button {
     background-color: $dark-background-color;
     color: $dark-text-secondary;
   }
-  .custom-pagination select{
+
+  .custom-pagination select {
     background-color: $dark-background-color;
     color: $dark-text-secondary;
   }
-  .custom-pagination button:disabled{
+
+  .custom-pagination button:disabled {
     background-color: #363636;
   }
-  div.mat-mdc-autocomplete-panel{
+
+  div.mat-mdc-autocomplete-panel {
     background-color: $dark-background-color;
   }
-  .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-text-field__input{
+
+  .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-text-field__input {
     color: $dark-text-primary;
   }
-  .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-floating-label{
+
+  .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-floating-label {
     color: $dark-text-secondary;
   }
-  .mdc-text-field{
+
+  .mdc-text-field {
     //border: 1px solid $dark-text-secondary;
   }
-  .burger-dropdown{
+
+  .burger-dropdown {
     background-color: $dark-background-color;
   }
-  .mat-mdc-raised-button:not(:disabled){
+
+  .mat-mdc-raised-button:not(:disabled) {
     background-color: #ff5f5f8f;
   }
 }
@@ -201,7 +215,8 @@ body {
   align-items: center;
   margin-top: 40px;
   margin-bottom: 50px;
-  .navbar-item{
+
+  .navbar-item {
     display: flex;
     align-items: center;
     gap: 20px;
@@ -210,6 +225,11 @@ body {
 }
 
 .header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  justify-content: center;
   text-align: center;
   margin-bottom: 20px;
 
@@ -240,23 +260,30 @@ body {
   font-size: 1rem;
   box-shadow: 0 2px 4px $shadow-light;
 }
-
-.search-button {
+.add-item, .search-button {
   background-color: $color-primary;
   box-shadow: 0 2px 4px $shadow-light;
   border: none;
-  padding: 16px 20px;
+  padding: 19px 29px 25px 24px;
   border-radius: 10%;
   cursor: pointer;
   display: flex;
-  margin-left: 15px;
+  justify-content: center;
+  align-items: center;
+  margin-left: 5px;
 
-  img {
-    width: 35px;
-    height: 35px;
+  mat-icon {
+    //width: 30px !important;
+    //height: 30px !important;
+    font-size: 30px;
+    color: white;
   }
 }
+.add-item-dialog{
+  display: flex;
+  flex-direction: column;
 
+}
 // Pokemon grid
 .pokemon-grid {
   display: grid;
@@ -416,6 +443,7 @@ mat-paginator {
 .mat-paginator-navigation-next:hover {
   background-color: #ddd;
 }
+
 .burger-dropdown {
   position: absolute;
   top: 64px;
@@ -487,13 +515,16 @@ mat-paginator {
 .mat-mdc-paginator-page-size-label {
   display: none;
 }
-.mat-mdc-paginator{
+
+.mat-mdc-paginator {
   margin-top: 20px;
 }
+
 .mat-mdc-paginator-range-label {
   display: none;
 }
-.mat-mdc-text-field-wrapper{
+
+.mat-mdc-text-field-wrapper {
   height: 55px !important;
   margin-top: 10px;
 }
@@ -504,11 +535,12 @@ mat-paginator {
   justify-content: center;
 
 
-.custom-pagination-content{
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+  .custom-pagination-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
   button {
     padding: 5px 10px;
     border-radius: 8px;
@@ -535,12 +567,17 @@ mat-paginator {
     font-size: 14px;
   }
 }
-.mdc-text-field--outlined .mat-mdc-form-field-infix, .mdc-text-field--no-label .mat-mdc-form-field-infix{
+.mat-mdc-form-field{
+  min-width: 100% !important;
+}
+.mdc-text-field--outlined .mat-mdc-form-field-infix, .mdc-text-field--no-label .mat-mdc-form-field-infix {
   padding-top: 12px !important;
 }
-.mat-mdc-form-field-hint-wrapper, .mat-mdc-form-field-error-wrapper{
+
+.mat-mdc-form-field-hint-wrapper, .mat-mdc-form-field-error-wrapper {
   padding: 0 !important;
 }
+
 .custom-pagination {
   display: flex;
   justify-content: center;
@@ -558,7 +595,8 @@ mat-paginator {
   font-weight: bold;
   text-decoration: underline;
 }
-.mat-mdc-raised-button:not(:disabled){
+
+.mat-mdc-raised-button:not(:disabled) {
   background-color: #ff5f5f;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.13);
   border: none;
@@ -566,29 +604,44 @@ mat-paginator {
   border-radius: 5px;
 }
 
-@media screen and (max-width: 768px){
-  .header .logo{
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  //width: 250%;
+  height: 80% !important;
+}
+
+.mdc-text-field--no-label:not(.mdc-text-field--textarea) .mat-mdc-form-field-input-control.mdc-text-field__input, .mat-mdc-text-field-wrapper .mat-mdc-form-field-input-control {
+  height: 300px;
+}
+
+.mat-mdc-dialog-actions{
+  justify-content: flex-end !important;
+  padding: 20px !important;
+}
+
+@media screen and (max-width: 768px) {
+  .header .logo {
     width: 300px;
   }
 }
-@media screen and (max-width: 684px){
-  .container{
+
+@media screen and (max-width: 684px) {
+  .container {
     padding: 0 20px;
   }
-  .header{
+  .header {
     display: none;
   }
-  .navbar{
+  .navbar {
     margin-bottom: 50px !important;
   }
-  .search-button{
+  .search-button {
     padding: 10px;
     margin-left: 5px;
   }
-  .search-input{
+  .search-input {
     padding: 20px 20px 20px 25px;
   }
-  .pokemon-card{
+  .pokemon-card {
     //padding: 30px;
   }
   .first-button,

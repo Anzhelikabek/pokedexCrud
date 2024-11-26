@@ -48,7 +48,6 @@ export class PokemonIdComponent implements OnInit {
     if (pokemonName) {
       // Делаем запрос, используя имя покемона
       this.pokemonService.getPokemon(pokemonName).subscribe((data) => {
-        console.log(data)
         this.pokemonService.getPokemonSpecies(pokemonName).subscribe(
           species => {
             const description = species.flavor_text_entries.find((entry: FlavorTextEntry) => entry.language.name === 'en')?.flavor_text || 'No description available';
@@ -67,7 +66,7 @@ export class PokemonIdComponent implements OnInit {
               abilities: data.abilities.map((ability: any) => ability.ability.name)
             };
 
-            console.log(this.pokemon.stats)
+            // console.log(this.pokemon)
           },
           error => console.error('Error fetching species details:', error)
         );
