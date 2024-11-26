@@ -21,7 +21,6 @@ export class PokemonIdComponent implements OnInit {
   translations: any = {};
 
   constructor(private translationService: TranslationService) {}
-
   private updateTranslations(): void {
     this.translationService.getTranslation('height').subscribe(translation => {
       this.translations.height = translation;
@@ -39,7 +38,6 @@ export class PokemonIdComponent implements OnInit {
       this.translations.abilities = translation;
     });
   }
-
   ngOnInit(): void {
     this.translationService.currentLang$.subscribe(() => {
       this.updateTranslations();

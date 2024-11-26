@@ -55,12 +55,13 @@ $type-colors: (
   steel: #B7B7CE,
   fairy: #D685AD
 );
-.loading{
+.loading {
   font-size: 24px;
   text-align: center;
   font-weight: bolder;
   margin-top: 100px;
 }
+
 .light-theme {
   background-color: $background-color;
   color: $color-text-primary;
@@ -163,6 +164,42 @@ $type-colors: (
   .mat-mdc-raised-button:not(:disabled) {
     background-color: #ff5f5f8f;
   }
+
+  ._mat-animation-noopable .mat-mdc-dialog-surface {
+    background-color: $dark-background-color;
+  }
+
+  .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    background-color: $dark-card-bg;
+  }
+
+  .mat-mdc-dialog-container .mat-mdc-dialog-title {
+    color: $dark-text-primary
+  }
+  .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-floating-label{
+    color: $dark-text-primary;
+  }
+  .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-text-field__input{
+    color: $dark-text-primary;
+  }
+  .mat-mdc-button:not(:disabled) {
+    color: $dark-primary-color;
+  }
+  .mat-mdc-button[disabled], .mat-mdc-button.mat-mdc-button-disabled{
+    color: $dark-primary-color;
+  }
+  .mat-pseudo-checkbox-full{
+    border-color: $dark-text-secondary;
+  }
+  .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text{
+    color: $dark-text-secondary;
+  }
+  .mat-mdc-dialog-container .mat-mdc-dialog-content{
+    color: $dark-text-primary;
+  }
+  .mdc-text-field--filled:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-floating-label{
+    color: $dark-text-secondary;
+  }
 }
 
 mat-icon {
@@ -260,6 +297,7 @@ body {
   font-size: 1rem;
   box-shadow: 0 2px 4px $shadow-light;
 }
+
 .add-item, .search-button {
   background-color: $color-primary;
   box-shadow: 0 2px 4px $shadow-light;
@@ -279,11 +317,13 @@ body {
     color: white;
   }
 }
-.add-item-dialog{
+
+.add-item-dialog {
   display: flex;
   flex-direction: column;
 
 }
+
 // Pokemon grid
 .pokemon-grid {
   display: grid;
@@ -567,9 +607,11 @@ mat-paginator {
     font-size: 14px;
   }
 }
-.mat-mdc-form-field{
+
+.mat-mdc-form-field {
   min-width: 100% !important;
 }
+
 .mdc-text-field--outlined .mat-mdc-form-field-infix, .mdc-text-field--no-label .mat-mdc-form-field-infix {
   padding-top: 12px !important;
 }
@@ -597,7 +639,7 @@ mat-paginator {
 }
 
 .mat-mdc-raised-button:not(:disabled) {
-  background-color: #ff5f5f;
+  background-color: #ff5f5f !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.13);
   border: none;
   padding: 24px 20px;
@@ -613,7 +655,7 @@ mat-paginator {
   height: 300px;
 }
 
-.mat-mdc-dialog-actions{
+.mat-mdc-dialog-actions {
   justify-content: flex-end !important;
   padding: 20px !important;
 }

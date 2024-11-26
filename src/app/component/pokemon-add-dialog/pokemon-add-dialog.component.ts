@@ -7,6 +7,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {NgForOf, NgIf, TitleCasePipe} from '@angular/common';
 import {MatOption, MatSelect} from '@angular/material/select';
+import {TranslationService} from '../../data/services/translation.service';
 
 @Component({
   selector: 'app-pokemon-add-dialog',
@@ -48,10 +49,12 @@ export class PokemonAddDialogComponent {
       {name: 'Speed', value: 0},
     ],
   };
-
   newType = ''; // Для нового типа
   newAbility = ''; // Для нового умения
   form: FormGroup;
+  translations: any = {};
+  previewImage: string | ArrayBuffer | null = null; // Для предварительного просмотра
+  selectedFileName: string | null = null; // Для отображения имени файла
 
   types = [
     {name: 'grass', color: '#48d0b0'},
@@ -73,11 +76,10 @@ export class PokemonAddDialogComponent {
     {name: 'steel', color: '#B7B7CE'},
     {name: 'fairy', color: '#D685AD'},
   ];
-
-  constructor(private fb: FormBuilder, public dialogRef: MatDialogRef<PokemonAddDialogComponent>) {
+  constructor(private translationService: TranslationService, private fb: FormBuilder, public dialogRef: MatDialogRef<PokemonAddDialogComponent>) {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
-      image: ['', [Validators.required, Validators.pattern(/https?:\/\/.+\.(jpg|jpeg|png|gif)$/i)]],
+      image: [null, Validators.required],
       description: ['', [Validators.required, Validators.maxLength(200)]],
       height: [0, [Validators.required, Validators.min(0)]],
       weight: [0, [Validators.required, Validators.min(0)]],
@@ -90,53 +92,89 @@ export class PokemonAddDialogComponent {
           this.createStat('Special-Attack'),
           this.createStat('Special-Defense'),
           this.createStat('Speed'),
-        ]
+        ],
       ),
+      newAbility: [''],
+    });
+  }
+  ngOnInit(): void {
+    this.translationService.currentLang$.subscribe(() => {
+      this.updateTranslations();
+    });
+  }
+  private updateTranslations(): void {
+    this.translationService.getTranslation('knowMore').subscribe(translation => {
+      this.translations.title = translation;
+    });
+    this.translationService.getTranslation('knowMore').subscribe(translation => {
+      this.translations.knowMore = translation;
+    });
+    this.translationService.getTranslation('search').subscribe(translation => {
+      this.translations.search = translation;
     });
   }
 
-  // Геттер для получения FormArray stats
   get stats(): FormArray {
     return this.form.get('stats') as FormArray;
   }
-
-  // Метод для создания статистики
   createStat(name: string): FormGroup {
     return this.fb.group({
       name: [name],
       value: [0, [Validators.min(0)]],
     });
   }
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
 
+    if (input?.files && input.files[0]) {
+      const file = input.files[0];
+      this.selectedFileName = file.name; // Сохраняем имя файла
+      this.form.patchValue({ image: file }); // Сохраняем файл в форме
+
+      // Создаем предварительный просмотр изображения
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewImage = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
   getTypeColor(typeName: string): string {
     const type = this.types.find((t) => t.name === typeName);
     return type ? type.color : '#ccc';
   }
-
   compareTypes(t1: string, t2: string): boolean {
     return t1 === t2;
   }
-
   onCancel(): void {
     this.dialogRef.close();
   }
-
   onSave(): void {
     if (this.form.valid) {
-      this.dialogRef.close(this.form.value);
+      const imagePreview = this.previewImage; // Используем предварительный просмотр
+
+      const dataToClose = {
+        name: this.form.get('name')?.value,
+        description: this.form.get('description')?.value,
+        height: this.form.get('height')?.value,
+        weight: this.form.get('weight')?.value,
+        image: imagePreview, // Передаём URL (base64) изображения
+        types: this.form.get('types')?.value, // Добавляем выбранные типы
+      };
+
+      this.dialogRef.close(dataToClose); // Закрываем модальное окно с данными
     } else {
       this.form.markAllAsTouched();
     }
   }
-
-
   addAbility(): void {
-    if (this.newAbility.trim()) {
-      this.pokemon.abilities.push(this.newAbility.trim());
-      this.newAbility = '';
+    const newAbility = this.form.get('newAbility')?.value;
+
+    if (newAbility && newAbility.trim()) { // Проверяем наличие значения и удаляем пробелы
+      this.pokemon.abilities.push(newAbility.trim()); // Добавляем умение в массив
+      this.form.patchValue({ newAbility: '' }); // Очищаем поле
     }
   }
-
   removeAbility(index: number): void {
     this.pokemon.abilities.splice(index, 1);
   }

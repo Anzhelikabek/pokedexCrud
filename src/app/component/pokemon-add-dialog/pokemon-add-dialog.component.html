@@ -15,16 +15,31 @@
 
     <br>
     <!-- URL изображения -->
-    <mat-form-field appearance="fill">
-      <mat-label>URL изображения</mat-label>
-      <input matInput formControlName="image" />
-      <mat-error *ngIf="form.get('image')?.hasError('required')">
-        URL изображения обязателен.
+    <div class="file-upload-container">
+      <!-- Кнопка для выбора файла -->
+      <button mat-raised-button color="primary" (click)="fileInput.click()">
+        <mat-icon>upload</mat-icon> Загрузить изображение
+      </button>
+
+      <!-- Имя файла после выбора -->
+      <span *ngIf="selectedFileName" class="file-name">
+    {{ selectedFileName }}
+  </span>
+
+      <!-- Скрытое поле ввода для выбора файла -->
+      <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" hidden />
+
+      <!-- Предварительный просмотр загруженного изображения -->
+      <div *ngIf="previewImage" class="image-preview">
+        <img [src]="previewImage" alt="Предварительный просмотр" />
+      </div>
+
+      <!-- Сообщение об ошибке, если файл не выбран -->
+      <mat-error *ngIf="!form.get('image')?.value && form.get('image')?.touched">
+        Загрузка изображения обязательна.
       </mat-error>
-      <mat-error *ngIf="form.get('image')?.hasError('pattern')">
-        Неверный формат URL. Используйте прямую ссылку на изображение.
-      </mat-error>
-    </mat-form-field>
+    </div>
+
 
     <br>
     <!-- Высота -->
@@ -99,6 +114,7 @@
         <mat-label>Добавить умение</mat-label>
         <input matInput formControlName="newAbility" (keydown.enter)="addAbility()" />
       </mat-form-field>
+
     </div>
 
     <br>

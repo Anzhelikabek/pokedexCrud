@@ -60,12 +60,17 @@ export class PokemonComponent {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        result.id = this.pokemons.length + 1; // Уникальный ID
-        this.pokemons.push(result);
+        this.pokemons.push({
+          name: result.name,
+          description: result.description,
+          height: result.height,
+          weight: result.weight,
+          image: result.image,
+          types: result.types, // Сохраняем типы
+        });
       }
     });
   }
-
   openEditDialog(pokemon: any): void {
     const dialogRef = this.dialog.open(PokemonEditDialogComponent, {
       width: '600px',
@@ -195,43 +200,34 @@ export class PokemonComponent {
 
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   }
-
   goToFirstPage() {
     this.pageIndex = 0;
     this.loadPokemons();
   }
-
   goToPreviousPage() {
     if (this.pageIndex > 0) {
       this.pageIndex--;
       this.loadPokemons();
     }
   }
-
   goToPage(page: number) {
     this.pageIndex = page - 1;
     this.loadPokemons();
   }
-
   goToNextPage() {
     if (this.pageIndex < this.totalPages - 1) {
       this.pageIndex++;
       this.loadPokemons();
     }
   }
-
   goToLastPage() {
     this.pageIndex = this.totalPages - 1;
     this.loadPokemons();
   }
-
   onPageSizeChange(event: any) {
     this.pageSize = event.target.value;
     this.totalPages = Math.ceil(this.totalPokemons / this.pageSize);
     this.pageIndex = 0; // сброс на первую страницу
     this.loadPokemons();
   }
-
-
-
 }
