@@ -1,0 +1,121 @@
+<h1 mat-dialog-title>Добавление нового покемона</h1>
+<form [formGroup]="form" (ngSubmit)="onSave()">
+  <div mat-dialog-content>
+    <!-- Имя -->
+    <mat-form-field appearance="fill">
+      <mat-label>Имя</mat-label>
+      <input matInput formControlName="name" />
+      <mat-error *ngIf="form.get('name')?.hasError('required')">
+        Имя обязательно.
+      </mat-error>
+      <mat-error *ngIf="form.get('name')?.hasError('minlength')">
+        Имя должно быть не менее 3 символов.
+      </mat-error>
+    </mat-form-field>
+
+    <br>
+    <!-- URL изображения -->
+    <mat-form-field appearance="fill">
+      <mat-label>URL изображения</mat-label>
+      <input matInput formControlName="image" />
+      <mat-error *ngIf="form.get('image')?.hasError('required')">
+        URL изображения обязателен.
+      </mat-error>
+      <mat-error *ngIf="form.get('image')?.hasError('pattern')">
+        Неверный формат URL. Используйте прямую ссылку на изображение.
+      </mat-error>
+    </mat-form-field>
+
+    <br>
+    <!-- Высота -->
+    <mat-form-field appearance="fill">
+      <mat-label>Высота (м)</mat-label>
+      <input matInput type="number" formControlName="height" />
+      <mat-error *ngIf="form.get('height')?.hasError('min')">
+        Высота должна быть больше 0.
+      </mat-error>
+    </mat-form-field>
+
+    <br>
+    <!-- Вес -->
+    <mat-form-field appearance="fill">
+      <mat-label>Вес (кг)</mat-label>
+      <input matInput type="number" formControlName="weight" />
+      <mat-error *ngIf="form.get('weight')?.hasError('min')">
+        Вес должен быть больше 0.
+      </mat-error>
+    </mat-form-field>
+
+    <br>
+    <!-- Описание -->
+    <mat-form-field appearance="fill">
+      <mat-label>Описание</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+      <mat-error *ngIf="form.get('description')?.hasError('required')">
+        Описание обязательно.
+      </mat-error>
+      <mat-error *ngIf="form.get('description')?.hasError('maxlength')">
+        Описание должно быть не более 200 символов.
+      </mat-error>
+    </mat-form-field>
+
+    <br>
+    <!-- Типы -->
+    <div class="add-item-dialog">
+      <mat-form-field appearance="fill">
+        <mat-label>Выберите типы</mat-label>
+        <mat-select formControlName="types" multiple>
+          <mat-option *ngFor="let type of types" [value]="type.name">
+            <span
+              class="type-label"
+              [style.backgroundColor]="type.color"
+            ></span>
+            {{ type.name | titlecase }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="selected-types">
+        <span
+          *ngFor="let type of form.get('types')?.value"
+          class="chip"
+          [style.backgroundColor]="getTypeColor(type)"
+        >
+          {{ type | titlecase }}
+        </span>
+      </div>
+    </div>
+
+    <br>
+    <!-- Умения -->
+    <div class="add-item-dialog">
+      <mat-label>Умения</mat-label>
+      <div *ngFor="let ability of pokemon.abilities; let i = index" class="chip">
+        {{ ability }}
+        <button mat-icon-button color="warn" (click)="removeAbility(i)">
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </div>
+      <mat-form-field appearance="fill">
+        <mat-label>Добавить умение</mat-label>
+        <input matInput formControlName="newAbility" (keydown.enter)="addAbility()" />
+      </mat-form-field>
+    </div>
+
+    <br>
+    <!-- Характеристики -->
+    <h3 class="add-item-dialog">Характеристики</h3>
+    <div formArrayName="stats">
+      <div *ngFor="let stat of stats.controls; let i = index" [formGroupName]="i">
+        <mat-form-field appearance="fill">
+          <mat-label>{{ stat.get('name')?.value }}</mat-label>
+          <input matInput type="number" formControlName="value" />
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+
+  <div mat-dialog-actions>
+    <button mat-button (click)="onCancel()">Отмена</button>
+    <button mat-button color="primary" [disabled]="form.invalid">Сохранить</button>
+  </div>
+</form>
