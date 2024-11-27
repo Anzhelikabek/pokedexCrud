@@ -18,11 +18,13 @@ import {HttpClient} from '@angular/common/http';
 import {PokemonEditDialogComponent} from '../../component/pokemon-edit-dialog/pokemon-edit-dialog.component';
 import {PokemonAddDialogComponent} from '../../component/pokemon-add-dialog/pokemon-add-dialog.component';
 import {MatProgressSpinner, ProgressSpinnerMode} from '@angular/material/progress-spinner';
+import {FooterComponent} from '../../component/footer/footer.component';
+import {AuthService} from '../../data/services/auth.service';
 
 @Component({
   selector: 'app-pokemon',
   standalone: true,
-  imports: [MatSlideToggleModule, MatIconModule, MatPaginatorModule, MatDialogModule, NgForOf, JsonPipe, TitleCasePipe, MatPaginator, NgIf, FormsModule, LeadingZerosPipe, MatButton, NgClass, RouterLink, PokemonIdComponent, NavbarComponent, RouterOutlet, MatIconButton, MatProgressSpinner],
+  imports: [MatSlideToggleModule, MatIconModule, MatPaginatorModule, MatDialogModule, NgForOf, JsonPipe, TitleCasePipe, MatPaginator, NgIf, FormsModule, LeadingZerosPipe, MatButton, NgClass, RouterLink, PokemonIdComponent, NavbarComponent, RouterOutlet, MatIconButton, MatProgressSpinner, FooterComponent],
   templateUrl: './pokemon.component.html',
   styleUrls: ['./pokemon.component.scss']
 })
@@ -40,20 +42,32 @@ export class PokemonComponent {
   pages: number[] = [];
   private apiUrl = 'https://crucrud.com/api/d265aef63a8e4cfc914988231cced933/pokedex';
   // pokemonsCrud: any[] = [];
+  isAdmin: boolean = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private translationService: TranslationService,private http: HttpClient, private dialog: MatDialog) {
+  constructor(private authService: AuthService, private translationService: TranslationService,private http: HttpClient, private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
     this.translationService.currentLang$.subscribe(() => {
       this.updateTranslations();
     });
+    const userEmail = localStorage.getItem('userEmail'); // Получаем email пользователя
+    this.isAdmin = this.authService.isAdmin(userEmail || '');
+    console.log(userEmail)
+    console.log(this.isAdmin)
+    if (!this.isAdmin) {
+      console.log('CRUD недоступен для этого пользователя');
+    }
     this.loadPokemons();
 
   }
   openAddDialog(): void {
+    if (!this.isAdmin) {
+      alert('У вас нет доступа к созданию!');
+      return;
+    }
     const dialogRef = this.dialog.open(PokemonAddDialogComponent, {
       width: '600px',
     });
@@ -72,6 +86,10 @@ export class PokemonComponent {
     });
   }
   openEditDialog(pokemon: any): void {
+    if (!this.isAdmin) {
+      alert('У вас нет доступа к редактированию!');
+      return;
+    }
     const dialogRef = this.dialog.open(PokemonEditDialogComponent, {
       width: '600px',
       data: { pokemon },
@@ -87,6 +105,10 @@ export class PokemonComponent {
     });
   }
   deletePokemon(pokemon: any): void {
+    if (!this.isAdmin) {
+      alert('У вас нет доступа к удалению!');
+      return;
+    }
     const index = this.pokemons.findIndex((p) => p.id === pokemon.id);
     if (index > -1) {
       this.pokemons.splice(index, 1); // Удаляем покемона из массива

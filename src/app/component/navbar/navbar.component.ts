@@ -1,15 +1,17 @@
 import {Component, ViewChild} from '@angular/core';
-import { MatIcon } from '@angular/material/icon';
-import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
+import {MatIcon} from '@angular/material/icon';
+import {LanguageSwitcherComponent} from '../language-switcher/language-switcher.component';
 import {Router, RouterLink, RouterOutlet} from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
+import {CookieService} from 'ngx-cookie-service';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {AuthService} from '../../data/services/auth.service';
 import {log} from '@angular-devkit/build-angular/src/builders/ssr-dev-server';
 import {MatSidenav, MatSidenavContainer} from '@angular/material/sidenav';
 import {MatListItem, MatNavList} from '@angular/material/list';
 import {NgForOf, NgIf} from '@angular/common';
-import {MatToolbar} from '@angular/material/toolbar';  // Импортируем CookieService
+import {MatToolbar} from '@angular/material/toolbar';
+import {TranslationService} from '../../data/services/translation.service';  // Импортируем CookieService
+import {signInWithEmailAndPassword, Auth} from '@angular/fire/auth';
 
 @Component({
   selector: 'app-navbar',
@@ -36,14 +38,27 @@ export class NavbarComponent {
   isDarkTheme = false; // начальное значение светлой темы
   @ViewChild('sidenav') sidenav!: MatSidenav;
   isMenuOpen = false;
+  translations: any = {};
 
-  constructor(private cookieService: CookieService, private authService: AuthService, private router: Router) {
+  constructor(private translationService: TranslationService, private cookieService: CookieService, private authService: AuthService, private router: Router) {
     // Проверяем значение темы в cookies при загрузке
     const savedTheme = this.cookieService.get('theme');
     if (savedTheme) {
       this.isDarkTheme = savedTheme === 'dark';
       this.applyTheme(); // Применяем сохраненную тему
     }
+  }
+
+  ngOnInit(): void {
+    this.translationService.currentLang$.subscribe(() => {
+      this.updateTranslations();
+    });
+  }
+
+  private updateTranslations(): void {
+    this.translationService.getTranslation('logOut').subscribe(translation => {
+      this.translations.logOut = translation;
+    });
   }
 
   toggleTheme() {
@@ -62,6 +77,7 @@ export class NavbarComponent {
       document.body.classList.remove('dark-theme');
     }
   }
+
   onLogout() {
     const currentUser = this.authService.getCurrentUser();
     if (currentUser) {
@@ -81,9 +97,11 @@ export class NavbarComponent {
       })
       .catch(err => alert('Error signing out: ' + err.message));
   }
+
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen; // Открыть/закрыть выпадающее меню
   }
+
   closeMenu(): void {
     this.isMenuOpen = false; // Закрыть меню при клике на затемняющий фон
   }

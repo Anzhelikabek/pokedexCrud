@@ -1,15 +1,15 @@
-<h1 mat-dialog-title>Добавление нового покемона</h1>
+<h1 mat-dialog-title>{{translations.addNewPokemon}}</h1>
 <form [formGroup]="form" (ngSubmit)="onSave()">
   <div mat-dialog-content>
     <!-- Имя -->
     <mat-form-field appearance="fill">
-      <mat-label>Имя</mat-label>
-      <input matInput formControlName="name" />
+      <mat-label>{{translations.name}}</mat-label>
+      <input matInput formControlName="name"/>
       <mat-error *ngIf="form.get('name')?.hasError('required')">
-        Имя обязательно.
+        {{translations.theNameIsRequired}}
       </mat-error>
       <mat-error *ngIf="form.get('name')?.hasError('minlength')">
-        Имя должно быть не менее 3 символов.
+        {{translations.theNameMustBeAtLeast3CharactersLong}}
       </mat-error>
     </mat-form-field>
 
@@ -18,7 +18,9 @@
     <div class="file-upload-container">
       <!-- Кнопка для выбора файла -->
       <button mat-raised-button color="primary" (click)="fileInput.click()">
-        <mat-icon>upload</mat-icon> Загрузить изображение
+        <mat-icon>upload</mat-icon>
+        {{translations.uploadAnImage}}
+
       </button>
 
       <!-- Имя файла после выбора -->
@@ -27,50 +29,49 @@
   </span>
 
       <!-- Скрытое поле ввода для выбора файла -->
-      <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" hidden />
+      <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" hidden/>
 
       <!-- Предварительный просмотр загруженного изображения -->
       <div *ngIf="previewImage" class="image-preview">
-        <img [src]="previewImage" alt="Предварительный просмотр" />
+        <img [src]="previewImage" alt="Предварительный просмотр"/>
       </div>
 
       <!-- Сообщение об ошибке, если файл не выбран -->
       <mat-error *ngIf="!form.get('image')?.value && form.get('image')?.touched">
-        Загрузка изображения обязательна.
+        {{translations.uploadingAnImageIsRequired}}
       </mat-error>
     </div>
-
 
     <br>
     <!-- Высота -->
     <mat-form-field appearance="fill">
-      <mat-label>Высота (м)</mat-label>
-      <input matInput type="number" formControlName="height" />
+      <mat-label> {{translations.height}} (м)</mat-label>
+      <input matInput type="number" formControlName="height"/>
       <mat-error *ngIf="form.get('height')?.hasError('min')">
-        Высота должна быть больше 0.
+        {{translations.theHeightMustBeGreaterThan0}}
       </mat-error>
     </mat-form-field>
 
     <br>
     <!-- Вес -->
     <mat-form-field appearance="fill">
-      <mat-label>Вес (кг)</mat-label>
-      <input matInput type="number" formControlName="weight" />
+      <mat-label>{{translations.weight}} (кг)</mat-label>
+      <input matInput type="number" formControlName="weight"/>
       <mat-error *ngIf="form.get('weight')?.hasError('min')">
-        Вес должен быть больше 0.
+        {{translations.theWeightMustBeGreaterThan0}}
       </mat-error>
     </mat-form-field>
 
     <br>
     <!-- Описание -->
     <mat-form-field appearance="fill">
-      <mat-label>Описание</mat-label>
+      <mat-label>{{translations.description}}</mat-label>
       <textarea matInput formControlName="description"></textarea>
       <mat-error *ngIf="form.get('description')?.hasError('required')">
-        Описание обязательно.
+        {{translations.aDescriptionIsRequired}}
       </mat-error>
       <mat-error *ngIf="form.get('description')?.hasError('maxlength')">
-        Описание должно быть не более 200 символов.
+        {{translations.descriptionShouldMax200}}
       </mat-error>
     </mat-form-field>
 
@@ -78,7 +79,7 @@
     <!-- Типы -->
     <div class="add-item-dialog">
       <mat-form-field appearance="fill">
-        <mat-label>Выберите типы</mat-label>
+        <mat-label>{{ translations.selectTheTypes}}</mat-label>
         <mat-select formControlName="types" multiple>
           <mat-option *ngFor="let type of types" [value]="type.name">
             <span
@@ -103,35 +104,35 @@
     <br>
     <!-- Умения -->
     <div class="add-item-dialog">
-      <mat-label>Умения</mat-label>
+      <mat-label>{{translations.skills}}</mat-label>
       <div *ngFor="let ability of pokemon.abilities; let i = index" class="chip">
         {{ ability }}
         <button mat-icon-button color="warn" (click)="removeAbility(i)">
-          <mat-icon>cancel</mat-icon>
+          <mat-icon>{{translations.cancel}}</mat-icon>
         </button>
       </div>
       <mat-form-field appearance="fill">
-        <mat-label>Добавить умение</mat-label>
-        <input matInput formControlName="newAbility" (keydown.enter)="addAbility()" />
+        <mat-label>{{translations.addASkill}}</mat-label>
+        <input matInput formControlName="newAbility" (keydown.enter)="addAbility()"/>
       </mat-form-field>
 
     </div>
 
     <br>
     <!-- Характеристики -->
-    <h3 class="add-item-dialog">Характеристики</h3>
+    <h3 class="add-item-dialog">{{translations.specifications}}</h3>
     <div formArrayName="stats">
       <div *ngFor="let stat of stats.controls; let i = index" [formGroupName]="i">
         <mat-form-field appearance="fill">
           <mat-label>{{ stat.get('name')?.value }}</mat-label>
-          <input matInput type="number" formControlName="value" />
+          <input matInput type="number" formControlName="value"/>
         </mat-form-field>
       </div>
     </div>
   </div>
 
   <div mat-dialog-actions>
-    <button mat-button (click)="onCancel()">Отмена</button>
-    <button mat-button color="primary" [disabled]="form.invalid">Сохранить</button>
+    <button mat-button (click)="onCancel()">{{translations.cancel}}</button>
+    <button mat-button color="primary" [disabled]="form.invalid">{{translations.save}}</button>
   </div>
 </form>

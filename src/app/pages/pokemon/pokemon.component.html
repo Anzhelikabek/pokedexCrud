@@ -21,7 +21,7 @@
       <button class="search-button" (click)="onSearch()">
         <mat-icon>search</mat-icon>
       </button>
-      <button class="add-item" (click)="openAddDialog()">
+      <button *ngIf="isAdmin" class="add-item" (click)="openAddDialog()">
         <mat-icon>add</mat-icon>
       </button>
 
@@ -34,16 +34,16 @@
           </div>
           <h2 class="pokemon-name">{{pokemon.name | titlecase}}</h2>
           <p class="pokemon-description">{{ pokemon.description }}</p>
-          <div>
+          <div class="buttons">
             <a [routerLink]="['/pokemon', pokemon.name]">
               <button mat-icon-button>
                 <mat-icon>visibility</mat-icon>
               </button>
             </a>
-            <button mat-icon-button (click)="openEditDialog(pokemon)">
+            <button  *ngIf="isAdmin"  mat-icon-button (click)="openEditDialog(pokemon)">
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button color="warn" (click)="deletePokemon(pokemon)">
+            <button  *ngIf="isAdmin"  mat-icon-button color="warn" (click)="deletePokemon(pokemon)">
               <mat-icon>delete</mat-icon>
             </button>
           </div>
@@ -105,6 +105,7 @@
       </div>
     </div>
   </div>
+  <app-footer></app-footer>
 </div>
 <div *ngIf="!loading" class="loading">loading...</div>
 

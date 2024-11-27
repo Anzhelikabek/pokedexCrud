@@ -1,21 +1,21 @@
-<h1 mat-dialog-title>Редактировать Покемона</h1>
+<h1 mat-dialog-title>{{translations.editPokemon}}</h1>
 <div mat-dialog-content>
   <mat-form-field appearance="fill">
-    <mat-label>Имя</mat-label>
+    <mat-label>{{translations.name}}</mat-label>
     <input matInput [(ngModel)]="pokemon.name" />
   </mat-form-field>
 
   <mat-form-field appearance="fill">
-    <mat-label>URL изображения</mat-label>
+    <mat-label>{{translations.imageURL}}</mat-label>
     <input matInput [(ngModel)]="pokemon.image" />
   </mat-form-field>
 
   <mat-form-field appearance="fill">
-    <mat-label>Описание</mat-label>
+    <mat-label>{{translations.description}}</mat-label>
     <textarea matInput [(ngModel)]="pokemon.description"></textarea>
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onCancel()">Отмена</button>
-  <button mat-button color="primary" (click)="onSave()">Сохранить</button>
+  <button mat-button (click)="onCancel()">{{translations.cancel}}</button>
+  <button mat-button color="primary" (click)="onSave()">{{translations.save}}</button>
 </div>

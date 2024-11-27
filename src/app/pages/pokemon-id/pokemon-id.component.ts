@@ -6,11 +6,12 @@ import {CommonModule} from '@angular/common';
 import {FlavorTextEntry} from '../../data/interfaces/pokemon';
 import {TranslationService} from '../../data/services/translation.service';
 import {NavbarComponent} from "../../component/navbar/navbar.component";
+import {FooterComponent} from '../../component/footer/footer.component';
 
 @Component({
   selector: 'app-pokemon-id',
   standalone: true,
-    imports: [CommonModule, NavbarComponent, RouterOutlet],
+  imports: [CommonModule, NavbarComponent, RouterOutlet, FooterComponent],
   templateUrl: './pokemon-id.component.html',
   styleUrls: ['./pokemon-id.component.scss']
 })

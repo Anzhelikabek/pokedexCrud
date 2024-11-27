@@ -6,5 +6,28 @@
   "knowMore": "Know More",
   "search": "Search eg, Ditto or Pikachu",
   "selectLanguage": "Select Language",
-  "chooseLanguage": "Choose language"
+  "chooseLanguage": "Choose language",
+
+  "name": "Name",
+  "theNameIsRequired": "The name is required",
+  "uploadAnImage": "Upload an image",
+  "uploadingAnImageIsRequired": "Uploading an image is required",
+  "description": "Description",
+  "aDescriptionIsRequired": "A description is required",
+  "selectTheTypes": "Select the types",
+  "skills": "Skills",
+  "addASkill": "Add a skill",
+  "specifications": "Specifications",
+  "theHeightMustBeGreaterThan0": "The height must be greater than 0.",
+  "theWeightMustBeGreaterThan0": "The weight must be greater than 0.",
+  "imageURL" : "Image URL",
+  "editPokemon" : "Edit Pokemon",
+  "addNewPokemon" : "Add new pokemon",
+
+  "cancel": "Cancel",
+  "save": "Save",
+  "logOut": "Log out",
+
+  "theNameMustBeAtLeast3CharactersLong": "Имя должно быть не менее 3 символов.",
+  "descriptionShouldMax200": "Описание должно быть не более 200 символов."
 }

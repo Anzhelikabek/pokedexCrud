@@ -200,6 +200,9 @@ $type-colors: (
   .mdc-text-field--filled:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-floating-label{
     color: $dark-text-secondary;
   }
+  .footer{
+    background-color: $dark-card-bg !important;
+  }
 }
 
 mat-icon {
@@ -221,9 +224,9 @@ mat-icon:hover {
 }
 
 body {
-  display: flex;
-  justify-content: center;
-  padding: 20px;
+  //display: flex;
+  //justify-content: center;
+  //padding: 20px;
   background-image: url("assets/images/Group.png");
   background-repeat: no-repeat;
   background-size: contain;
@@ -483,7 +486,12 @@ mat-paginator {
 .mat-paginator-navigation-next:hover {
   background-color: #ddd;
 }
-
+hr{
+  width: 100%;
+}
+.buttons{
+  display: flex;
+}
 .burger-dropdown {
   position: absolute;
   top: 64px;
@@ -676,8 +684,10 @@ mat-paginator {
   .navbar {
     margin-bottom: 50px !important;
   }
-  .search-button {
-    padding: 10px;
+  .search-button, .add-item {
+    //padding: 10px;
+    padding: 10px 15px 13px 11px;
+
     margin-left: 5px;
   }
   .search-input {

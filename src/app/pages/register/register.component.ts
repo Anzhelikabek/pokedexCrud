@@ -45,7 +45,8 @@ export class RegisterComponent {
     this.authService.register(this.email, this.password)
       .then(() => {
         alert('Registration successful!');
-        this.router.navigate(['/pokemon']); // Перенаправление на страницу /pokemon
+        this.router.navigate(['/pokemon']).then(r => window.location.reload()); // Перенаправление на страницу /pokemon
+
         this.clearInputs(); // Очистка инпутов
       })
       .catch(err => {

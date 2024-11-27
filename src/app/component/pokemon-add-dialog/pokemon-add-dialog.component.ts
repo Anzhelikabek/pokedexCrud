@@ -76,6 +76,7 @@ export class PokemonAddDialogComponent {
     {name: 'steel', color: '#B7B7CE'},
     {name: 'fairy', color: '#D685AD'},
   ];
+
   constructor(private translationService: TranslationService, private fb: FormBuilder, public dialogRef: MatDialogRef<PokemonAddDialogComponent>) {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
@@ -97,39 +98,91 @@ export class PokemonAddDialogComponent {
       newAbility: [''],
     });
   }
+
   ngOnInit(): void {
     this.translationService.currentLang$.subscribe(() => {
       this.updateTranslations();
     });
   }
+
   private updateTranslations(): void {
-    this.translationService.getTranslation('knowMore').subscribe(translation => {
-      this.translations.title = translation;
+    this.translationService.getTranslation('name').subscribe(translation => {
+      this.translations.name = translation;
     });
-    this.translationService.getTranslation('knowMore').subscribe(translation => {
-      this.translations.knowMore = translation;
+    this.translationService.getTranslation('theNameIsRequired').subscribe(translation => {
+      this.translations.theNameIsRequired = translation;
     });
-    this.translationService.getTranslation('search').subscribe(translation => {
-      this.translations.search = translation;
+    this.translationService.getTranslation('theNameMustBeAtLeast3CharactersLong').subscribe(translation => {
+      this.translations.theNameMustBeAtLeast3CharactersLong = translation;
+    });
+    this.translationService.getTranslation('uploadAnImage').subscribe(translation => {
+      this.translations.uploadAnImage = translation;
+    });
+    this.translationService.getTranslation('uploadingAnImageIsRequired').subscribe(translation => {
+      this.translations.uploadingAnImageIsRequired = translation;
+    });
+    this.translationService.getTranslation('height').subscribe(translation => {
+      this.translations.height = translation;
+    });
+    this.translationService.getTranslation('theHeightMustBeGreaterThan0').subscribe(translation => {
+      this.translations.theHeightMustBeGreaterThan0 = translation;
+    });
+    this.translationService.getTranslation('weight').subscribe(translation => {
+      this.translations.weight = translation;
+    });
+    this.translationService.getTranslation('theWeightMustBeGreaterThan0').subscribe(translation => {
+      this.translations.theWeightMustBeGreaterThan0 = translation;
+    });
+    this.translationService.getTranslation('description').subscribe(translation => {
+      this.translations.description = translation;
+    });
+    this.translationService.getTranslation('aDescriptionIsRequired').subscribe(translation => {
+      this.translations.aDescriptionIsRequired = translation;
+    });
+    this.translationService.getTranslation('descriptionShouldMax200').subscribe(translation => {
+      this.translations.descriptionShouldMax200 = translation;
+    });
+    this.translationService.getTranslation('selectTheTypes').subscribe(translation => {
+      this.translations.selectTheTypes = translation;
+    });
+    this.translationService.getTranslation('skills').subscribe(translation => {
+      this.translations.skills = translation;
+    });
+    this.translationService.getTranslation('addASkill').subscribe(translation => {
+      this.translations.addASkill = translation;
+    });
+    this.translationService.getTranslation('specifications').subscribe(translation => {
+      this.translations.specifications = translation;
+    });
+    this.translationService.getTranslation('cancel').subscribe(translation => {
+      this.translations.cancel = translation;
+    });
+    this.translationService.getTranslation('save').subscribe(translation => {
+      this.translations.save = translation;
+    });
+    this.translationService.getTranslation('addNewPokemon').subscribe(translation => {
+      this.translations.addNewPokemon = translation;
     });
   }
 
   get stats(): FormArray {
     return this.form.get('stats') as FormArray;
   }
+
   createStat(name: string): FormGroup {
     return this.fb.group({
       name: [name],
       value: [0, [Validators.min(0)]],
     });
   }
+
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
 
     if (input?.files && input.files[0]) {
       const file = input.files[0];
       this.selectedFileName = file.name; // Сохраняем имя файла
-      this.form.patchValue({ image: file }); // Сохраняем файл в форме
+      this.form.patchValue({image: file}); // Сохраняем файл в форме
 
       // Создаем предварительный просмотр изображения
       const reader = new FileReader();
@@ -139,16 +192,20 @@ export class PokemonAddDialogComponent {
       reader.readAsDataURL(file);
     }
   }
+
   getTypeColor(typeName: string): string {
     const type = this.types.find((t) => t.name === typeName);
     return type ? type.color : '#ccc';
   }
+
   compareTypes(t1: string, t2: string): boolean {
     return t1 === t2;
   }
+
   onCancel(): void {
     this.dialogRef.close();
   }
+
   onSave(): void {
     if (this.form.valid) {
       const imagePreview = this.previewImage; // Используем предварительный просмотр
@@ -167,14 +224,16 @@ export class PokemonAddDialogComponent {
       this.form.markAllAsTouched();
     }
   }
+
   addAbility(): void {
     const newAbility = this.form.get('newAbility')?.value;
 
     if (newAbility && newAbility.trim()) { // Проверяем наличие значения и удаляем пробелы
       this.pokemon.abilities.push(newAbility.trim()); // Добавляем умение в массив
-      this.form.patchValue({ newAbility: '' }); // Очищаем поле
+      this.form.patchValue({newAbility: ''}); // Очищаем поле
     }
   }
+
   removeAbility(index: number): void {
     this.pokemon.abilities.splice(index, 1);
   }
