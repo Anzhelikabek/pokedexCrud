@@ -20,6 +20,8 @@ import {PokemonAddDialogComponent} from '../../component/pokemon-add-dialog/poke
 import {MatProgressSpinner, ProgressSpinnerMode} from '@angular/material/progress-spinner';
 import {FooterComponent} from '../../component/footer/footer.component';
 import {AuthService} from '../../data/services/auth.service';
+import {forkJoin, switchMap} from 'rxjs';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-pokemon',
@@ -40,13 +42,11 @@ export class PokemonComponent {
   totalPages = 0; // Общее количество страниц
   pageSizeOptions = [10, 20, 50]; // Возможные размеры страниц
   pages: number[] = [];
-  private apiUrl = 'https://crucrud.com/api/d265aef63a8e4cfc914988231cced933/pokedex';
-  // pokemonsCrud: any[] = [];
   isAdmin: boolean = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private authService: AuthService, private translationService: TranslationService,private http: HttpClient, private dialog: MatDialog) {
+  constructor(private authService: AuthService, private translationService: TranslationService, private http: HttpClient, private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -61,7 +61,6 @@ export class PokemonComponent {
       console.log('CRUD недоступен для этого пользователя');
     }
     this.loadPokemons();
-
   }
   openAddDialog(): void {
     if (!this.isAdmin) {
@@ -92,7 +91,7 @@ export class PokemonComponent {
     }
     const dialogRef = this.dialog.open(PokemonEditDialogComponent, {
       width: '600px',
-      data: { pokemon },
+      data: {pokemon},
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -192,35 +191,12 @@ export class PokemonComponent {
     );
   }
 
-  // postPokemons() {
-  //   this.pokemons.forEach(pokemon => {
-  //     this.http.post(this.apiUrl, pokemon).subscribe({
-  //       next: response => {
-  //         console.log('Успешно отправлено:', response);
-  //       },
-  //       error: error => {
-  //         console.error('Ошибка при отправке:', error);
-  //       },
-  //     });
-  //   });
-  // }
-  // getPokemons() {
-  //   this.http.get<any[]>(this.apiUrl).subscribe({
-  //     next: response => {
-  //       this.pokemonsCrud = response; // Сохраняем полученные данные в массив
-  //       console.log('Полученные данные:', this.pokemonsCrud);
-  //     },
-  //     error: error => {
-  //       console.error('Ошибка при получении данных:', error);
-  //     },
-  //   });
-  // }
   generatePageNumbers(): number[] {
     // Логика для отображения страниц вокруг текущей
     let start = Math.max(1, this.pageIndex - 2);
     let end = Math.min(this.totalPages, this.pageIndex + 2);
 
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+    return Array.from({length: end - start + 1}, (_, i) => start + i);
   }
   goToFirstPage() {
     this.pageIndex = 0;

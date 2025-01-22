@@ -64,9 +64,7 @@ export class PokemonIdComponent implements OnInit {
               })),
               abilities: data.abilities.map((ability: any) => ability.ability.name)
             };
-
-            // console.log(this.pokemon)
-          },
+            },
           error => console.error('Error fetching species details:', error)
         );
       });
