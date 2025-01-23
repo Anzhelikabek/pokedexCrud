@@ -24,15 +24,15 @@
           <h2 class="pokemon-name">{{pokemon.name | titlecase}}</h2>
           <p class="pokemon-description">{{ pokemon.description }}</p>
           <div class="buttons">
-            <a [routerLink]="['/pokemon', pokemon.name]">
+            <a [routerLink]="['/pokemon', pokemon._id]">
               <button mat-icon-button>
                 <mat-icon>visibility</mat-icon>
               </button>
             </a>
-            <button  *ngIf="isAdmin"  mat-icon-button (click)="openEditDialog(pokemon)">
+            <button *ngIf="isAdmin" mat-icon-button (click)="openEditDialog(pokemon)">
               <mat-icon>edit</mat-icon>
             </button>
-            <button  *ngIf="isAdmin"  mat-icon-button color="warn" (click)="deletePokemon(pokemon)">
+            <button *ngIf="isAdmin" mat-icon-button color="warn" (click)="deletePokemon(pokemon)">
               <mat-icon>delete</mat-icon>
             </button>
           </div>
@@ -40,57 +40,32 @@
         </div>
         <div>
           <span class="pokemon-id">{{ pokemon.id | leadingZeros }}</span>
-          <img [src]="pokemon.image" [alt]="pokemon.name" class="pokemon-image">
+          <img [src]="pokemon.image" [alt]="pokemon.name"  loading="lazy"  class="pokemon-image">
         </div>
       </div>
     </div>
     <div class="custom-pagination">
       <div class="custom-pagination-content">
-        <button
-          (click)="goToFirstPage()"
-          [disabled]="pageIndex === 0"
-          class="first-button">
-          << First
-        </button>
-        <button
-          (click)="goToPreviousPage()"
-          [disabled]="pageIndex === 0"
-          class="back-button">
-          < Back
-        </button>
+        <div class="pagination">
+          <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
+            <<
+          </button>
+          <span *ngFor="let page of [].constructor(totalPages); let i = index">
+      <button
+        [class.active]="i + 1 === currentPage"
+        (click)="goToPage(i + 1)"
+      >
+        {{ i + 1 }}
+      </button>
+    </span>
+          <button
+            (click)="goToPage(currentPage + 1)"
+            [disabled]="currentPage === totalPages"
+          >
+            >>
+          </button>
+        </div>
 
-        <button
-          *ngFor="let page of pages"
-          (click)="goToPage(page)"
-          [class.active]="page === pageIndex + 1"
-          class="page-button"
-        >
-          {{ page }}
-        </button>
-
-        <button
-          (click)="goToNextPage()"
-          [disabled]="pageIndex === totalPages - 1"
-          class="next-button"
-        >
-          Next >
-        </button>
-        <button
-          (click)="goToLastPage()"
-          [disabled]="pageIndex === totalPages - 1"
-          class="last-button"
-        >
-          Last >>
-        </button>
-
-        <select
-          (change)="onPageSizeChange($event)"
-          class="page-size-select"
-        >
-          <option *ngFor="let size of pageSizeOptions" [value]="size" [selected]="size === pageSize">
-            {{ size }}
-          </option>
-        </select>
       </div>
     </div>
   </div>

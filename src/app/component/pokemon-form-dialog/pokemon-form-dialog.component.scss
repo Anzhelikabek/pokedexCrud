@@ -1,0 +1,10 @@
+.image-preview{
+  width: 200px;
+  margin-top: 8px;
+
+  img{
+    width: 100%;
+    object-position: center;
+    object-fit: cover;
+  }
+}
