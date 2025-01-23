@@ -1,27 +1,24 @@
-import {Component, EventEmitter, HostBinding, inject, Output, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatIconModule} from '@angular/material/icon';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
-import {PokemonService} from '../../data/services/pokemon.service';
 import {JsonPipe, NgClass, NgForOf, NgIf, TitleCasePipe} from '@angular/common';
-import {MatPaginator, PageEvent} from '@angular/material/paginator';
+import {MatPaginator} from '@angular/material/paginator';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {FormsModule} from '@angular/forms';
 import {LeadingZerosPipe} from '../../pipes/leading-zeros.pipe';
-import {FlavorTextEntry, Pokemon} from '../../data/interfaces/pokemon'
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {RouterLink, RouterOutlet} from '@angular/router';
 import {PokemonIdComponent} from '../pokemon-id/pokemon-id.component';
 import {TranslationService} from '../../data/services/translation.service';
 import {NavbarComponent} from "../../component/navbar/navbar.component";
 import {HttpClient} from '@angular/common/http';
-import {PokemonEditDialogComponent} from '../../component/pokemon-edit-dialog/pokemon-edit-dialog.component';
-import {PokemonAddDialogComponent} from '../../component/pokemon-add-dialog/pokemon-add-dialog.component';
-import {MatProgressSpinner, ProgressSpinnerMode} from '@angular/material/progress-spinner';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {FooterComponent} from '../../component/footer/footer.component';
 import {AuthService} from '../../data/services/auth.service';
-import {forkJoin, switchMap} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {CrudCrudService} from '../../data/services/crud-crud.service';
+import Swal from 'sweetalert2';
+import {PokemonFormDialogComponent} from '../../component/pokemon-form-dialog/pokemon-form-dialog.component';
 
 @Component({
   selector: 'app-pokemon',
@@ -30,23 +27,20 @@ import {map} from 'rxjs/operators';
   templateUrl: './pokemon.component.html',
   styleUrls: ['./pokemon.component.scss']
 })
-export class PokemonComponent {
-  pokemonService = inject(PokemonService);
+export class PokemonComponent implements OnInit{
   loading: boolean = false;
   pokemons: any[] = [];
   totalPokemons = 0;
-  pageSize = 20;
-  pageIndex = 0;
+  pageSize = 5;
   searchTerm: string = ''; // Для хранения данных поиска
   translations: any = {};
   totalPages = 0; // Общее количество страниц
-  pageSizeOptions = [10, 20, 50]; // Возможные размеры страниц
-  pages: number[] = [];
   isAdmin: boolean = false;
+  currentPage = 1; // Текущая страница
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private authService: AuthService, private translationService: TranslationService, private http: HttpClient, private dialog: MatDialog) {
+  constructor(private authService: AuthService, private translationService: TranslationService, private http: HttpClient, private dialog: MatDialog, private crudCrudService: CrudCrudService) {
   }
 
   ngOnInit(): void {
@@ -64,55 +58,149 @@ export class PokemonComponent {
   }
   openAddDialog(): void {
     if (!this.isAdmin) {
-      alert('У вас нет доступа к созданию!');
+      Swal.fire({
+        icon: 'error',
+        title: 'Доступ запрещен',
+        text: 'У вас нет прав для добавления покемонов!',
+      });
       return;
     }
-    const dialogRef = this.dialog.open(PokemonAddDialogComponent, {
+    const dialogRef = this.dialog.open(PokemonFormDialogComponent, {
       width: '600px',
+      data: {},
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.pokemons.push({
+        const newPokemon = {
           name: result.name,
           description: result.description,
           height: result.height,
           weight: result.weight,
           image: result.image,
           types: result.types, // Сохраняем типы
-        });
+        };
+
+        this.crudCrudService.addPokemon(newPokemon).subscribe(
+          (response) => {
+            // Успешное добавление
+            this.pokemons.push(response); // Добавляем новый покемон в локальный массив
+            this.totalPokemons++; // Обновляем общее количество покемонов
+            this.totalPages = Math.ceil(this.totalPokemons / this.pageSize); // Пересчитываем страницы
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Добавлено!',
+              text: `Покемон "${response.name}" был успешно добавлен.`,
+            });
+          },
+          (error) => {
+            console.error('Ошибка при добавлении покемона:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Ошибка',
+              text: 'Не удалось добавить покемона. Попробуйте снова.',
+            });
+          }
+        );
       }
     });
   }
   openEditDialog(pokemon: any): void {
     if (!this.isAdmin) {
-      alert('У вас нет доступа к редактированию!');
+      Swal.fire({
+        icon: 'error',
+        title: 'Доступ запрещен',
+        text: 'У вас нет прав для редактирования покемонов!',
+      });
       return;
     }
-    const dialogRef = this.dialog.open(PokemonEditDialogComponent, {
+
+    const dialogRef = this.dialog.open(PokemonFormDialogComponent, {
       width: '600px',
-      data: {pokemon},
+      data: { pokemon },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        const index = this.pokemons.findIndex((p) => p.id === pokemon.id);
-        if (index > -1) {
-          this.pokemons[index] = result;
-        }
+        this.crudCrudService.updatePokemon(pokemon._id, result).subscribe(
+          () => {
+            // Обновляем локальный массив вручную
+            const index = this.pokemons.findIndex((p) => p._id === pokemon._id);
+            if (index > -1) {
+              this.pokemons[index] = { ...pokemon, ...result }; // Обновляем данные локально
+            }
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Обновлено!',
+              text: `Покемон "${result.name}" успешно обновлен.`,
+            });
+          },
+          (error) => {
+            console.error('Ошибка при обновлении покемона:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Ошибка',
+              text: 'Не удалось обновить покемона. Попробуйте снова.',
+            });
+          }
+        );
+      } else {
+        console.log('Диалоговое окно было закрыто без изменений.');
       }
     });
   }
+
   deletePokemon(pokemon: any): void {
     if (!this.isAdmin) {
-      alert('У вас нет доступа к удалению!');
+      Swal.fire({
+        icon: 'error',
+        title: 'Доступ запрещен',
+        text: 'У вас нет прав для удаления покемонов!',
+      });
       return;
     }
-    const index = this.pokemons.findIndex((p) => p.id === pokemon.id);
-    if (index > -1) {
-      this.pokemons.splice(index, 1); // Удаляем покемона из массива
-    }
+
+    Swal.fire({
+      title: 'Вы уверены?',
+      text: 'Вы не сможете вернуть удалённого покемона!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Да, удалить!',
+      cancelButtonText: 'Отмена',
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+        this.crudCrudService.deletePokemon(pokemon._id).subscribe(
+          () => {
+            // Успешное удаление
+            this.pokemons = this.pokemons.filter((p) => p._id !== pokemon._id); // Удаляем из массива
+            this.totalPokemons--; // Обновляем общее количество
+            this.totalPages = Math.ceil(this.totalPokemons / this.pageSize); // Обновляем страницы
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Удалено!',
+              text: 'Покемон был успешно удален.',
+            });
+          },
+          (error) => {
+            console.error('Ошибка при удалении покемона:', error);
+
+            Swal.fire({
+              icon: 'error',
+              title: 'Ошибка',
+              text: 'Не удалось удалить покемона. Попробуйте снова.',
+            });
+          }
+        );
+      }
+    });
   }
+
   private updateTranslations(): void {
     this.translationService.getTranslation('knowMore').subscribe(translation => {
       this.translations.title = translation;
@@ -126,106 +214,62 @@ export class PokemonComponent {
   }
   onSearch(): void {
     if (this.searchTerm.trim()) {
-      this.pokemonService.getPokemon(this.searchTerm.toLowerCase()).subscribe(
-        data => {
-          this.pokemons = []
-          let objToArr = [data]
-          objToArr.forEach((pokemon: any) => {
-            this.pokemonService.getPokemonSpecies(pokemon.id).subscribe(
-              species => {
-                const description = species.flavor_text_entries.find((entry: FlavorTextEntry) => entry.language.name === 'en')?.flavor_text || 'No description available';
-                this.pokemons.push({
-                  name: pokemon.name,
-                  id: pokemon.id,
-                  image: pokemon.sprites.front_default,
-                  types: pokemon.types.map((type: any) => type.type.name),
-                  description: description
-                });
-              },
-              error => console.error('Error fetching species details:', error)
-            );
-          });
+      this.crudCrudService.searchPokemon(this.searchTerm).subscribe(
+        (filteredPokemons: any[]) => {
+          if (filteredPokemons.length === 0) {
+            Swal.fire({
+              icon: 'info',
+              title: 'Покемон не найден',
+              text: `Покемон с именем "${this.searchTerm}" не найден.`,
+            });
+          } else {
+            this.pokemons = filteredPokemons;
+
+            // Обновляем пагинацию
+            this.totalPokemons = filteredPokemons.length;
+            this.totalPages = Math.ceil(this.totalPokemons / this.pageSize);
+            this.currentPage = 1; // Сбрасываем текущую страницу на первую
+          }
         },
-        error => console.error('Pokemon not found:', error)
+        (error) => {
+          console.error('Ошибка при поиске покемонов:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Ошибка',
+            text: 'Не удалось выполнить поиск. Попробуйте снова.',
+          });
+        }
       );
     } else {
       this.loadPokemons();
     }
   }
+
   loadPokemons(): void {
-    const offset = this.pageIndex * this.pageSize;
-    this.pokemonService.fetchPokemon(offset, this.pageSize).subscribe(
-      data => {
-        this.totalPokemons = data.count;
-        this.totalPages = Math.ceil(this.totalPokemons / this.pageSize);
-        this.pages = this.generatePageNumbers(); // Генерация номеров страниц
-        this.pokemons = []; // Сброс массива с покемонами
-        // Для каждого покемона делаем запрос, чтобы получить детализированные данные
-        data.results.forEach((pokemon: any) => {
-          this.pokemonService.getPokemonDetails(pokemon.url).subscribe(
-            details => {
-              this.pokemonService.getPokemonSpecies(details.id).subscribe(
-                species => {
-                  const description = species.flavor_text_entries.find(
-                    (entry: FlavorTextEntry) => entry.language.name === 'en'
-                  )?.flavor_text || 'No description available';
-                  this.pokemons.push({
-                    name: details.name,
-                    id: details.id,
-                    image: details.sprites.front_default,
-                    types: details.types.map((type: any) => type.type.name),
-                    description: description
-                  });
-                  this.loading = true
-                },
-                error => console.error('Error fetching species details:', error)
-              );
-            },
-            error => console.error('Error fetching details:', error)
-          );
-        });
+    this.crudCrudService.getPokemons().subscribe(
+      (data: any[]) => {
+        setTimeout(() => {
+          this.totalPokemons = data.length; // Общее количество покемонов
+          this.totalPages = Math.ceil(this.totalPokemons / this.pageSize); // Общее количество страниц
+
+          // Фильтруем покемонов для текущей страницы
+          const startIndex = (this.currentPage - 1) * this.pageSize;
+          const endIndex = startIndex + this.pageSize;
+          this.pokemons = data.slice(startIndex, endIndex); // Покемоны для текущей страницы
+
+          this.loading = true;
+        }, 1000); // Добавляем задержку в 1 секунду
       },
-      error => {
-        console.error('Error fetching pokemons:', error);
+      (error) => {
+        console.error('Ошибка при загрузке покемонов:', error);
+        this.loading = false;
       }
     );
   }
-
-  generatePageNumbers(): number[] {
-    // Логика для отображения страниц вокруг текущей
-    let start = Math.max(1, this.pageIndex - 2);
-    let end = Math.min(this.totalPages, this.pageIndex + 2);
-
-    return Array.from({length: end - start + 1}, (_, i) => start + i);
-  }
-  goToFirstPage() {
-    this.pageIndex = 0;
-    this.loadPokemons();
-  }
-  goToPreviousPage() {
-    if (this.pageIndex > 0) {
-      this.pageIndex--;
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
       this.loadPokemons();
     }
-  }
-  goToPage(page: number) {
-    this.pageIndex = page - 1;
-    this.loadPokemons();
-  }
-  goToNextPage() {
-    if (this.pageIndex < this.totalPages - 1) {
-      this.pageIndex++;
-      this.loadPokemons();
-    }
-  }
-  goToLastPage() {
-    this.pageIndex = this.totalPages - 1;
-    this.loadPokemons();
-  }
-  onPageSizeChange(event: any) {
-    this.pageSize = event.target.value;
-    this.totalPages = Math.ceil(this.totalPokemons / this.pageSize);
-    this.pageIndex = 0; // сброс на первую страницу
-    this.loadPokemons();
   }
 }

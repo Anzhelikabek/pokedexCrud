@@ -15,5 +15,5 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent, ...canActivate(redirectLoggedInToPokemon) },
   { path: 'pokemon', component: PokemonComponent, ...canActivate(redirectUnauthorizedToLogin) },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: 'pokemon/:name', component: PokemonIdComponent },
+  { path: 'pokemon/:_id', component: PokemonIdComponent },
 ];

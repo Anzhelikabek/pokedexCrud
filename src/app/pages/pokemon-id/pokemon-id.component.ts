@@ -1,12 +1,11 @@
-// pokemon-id.component.ts
 import {Component, inject, OnInit} from '@angular/core';
 import {ActivatedRoute, RouterOutlet} from '@angular/router';
-import {PokemonService} from '../../data/services/pokemon.service';
 import {CommonModule} from '@angular/common';
-import {FlavorTextEntry} from '../../data/interfaces/pokemon';
 import {TranslationService} from '../../data/services/translation.service';
 import {NavbarComponent} from "../../component/navbar/navbar.component";
 import {FooterComponent} from '../../component/footer/footer.component';
+import Swal from 'sweetalert2';
+import {CrudCrudService} from '../../data/services/crud-crud.service';
 
 @Component({
   selector: 'app-pokemon-id',
@@ -18,10 +17,9 @@ import {FooterComponent} from '../../component/footer/footer.component';
 export class PokemonIdComponent implements OnInit {
   pokemon: any;
   private route = inject(ActivatedRoute);
-  private pokemonService = inject(PokemonService);
   translations: any = {};
 
-  constructor(private translationService: TranslationService) {}
+  constructor(private translationService: TranslationService, private crudCrudService: CrudCrudService) {}
   private updateTranslations(): void {
     this.translationService.getTranslation('height').subscribe(translation => {
       this.translations.height = translation;
@@ -43,31 +41,27 @@ export class PokemonIdComponent implements OnInit {
     this.translationService.currentLang$.subscribe(() => {
       this.updateTranslations();
     });
-    const pokemonName = this.route.snapshot.paramMap.get('name');
-    if (pokemonName) {
+    const pokemonId = this.route.snapshot.paramMap.get('_id');
+    if (pokemonId) {
       // Делаем запрос, используя имя покемона
-      this.pokemonService.getPokemon(pokemonName).subscribe((data) => {
-        this.pokemonService.getPokemonSpecies(pokemonName).subscribe(
-          species => {
-            const description = species.flavor_text_entries.find((entry: FlavorTextEntry) => entry.language.name === 'en')?.flavor_text || 'No description available';
-            this.pokemon = {
-              name: data.name,
-              id: data.id,
-              image: data.sprites.front_default,
-              types: data.types.map((type: any) => type.type.name),
-              description: description,
-              height: data.height,
-              weight: data.weight,
-              stats: data.stats.map((stat: any) => ({
-                name: stat.stat.name,
-                value: stat.base_stat
-              })),
-              abilities: data.abilities.map((ability: any) => ability.ability.name)
-            };
-            },
-          error => console.error('Error fetching species details:', error)
-        );
-      });
+      this.crudCrudService.getPokemonDetails(pokemonId).subscribe(
+        (data) => {
+          console.log(data)
+          this.pokemon = {
+            ...data,
+            image: data.image || 'default_image_url', // Установим заглушку для изображения
+            description: data.description || 'No description available', // Заглушка для описания
+          };
+        },
+        (error) => {
+          console.error('Error fetching Pokemon details:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Ошибка',
+            text: 'Не удалось загрузить данные о покемоне. Попробуйте снова.',
+          });
+        }
+      );
     }
   }
 }
